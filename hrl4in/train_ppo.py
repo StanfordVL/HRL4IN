@@ -16,7 +16,6 @@ import torch
 from torch.utils.tensorboard import SummaryWriter
 
 import hrl4in
-from hrl4in.envs.toy_env.toy_env import ToyEnv
 from hrl4in.utils.logging import logger
 from hrl4in.rl.ppo import PPO, Policy, RolloutStorage
 from hrl4in.utils.utils import *
@@ -24,9 +23,7 @@ from hrl4in.utils.args import *
 
 import gibson2
 from gibson2.envs.parallel_env import ParallelNavEnvironment
-from gibson2.envs.locomotor_env import NavigateEnv, NavigateRandomEnv, InteractiveNavigateEnv
-
-
+from gibson2.envs.locomotor_env import NavigateEnv, NavigateRandomEnv
 
 def evaluate(envs,
              actor_critic,
@@ -193,7 +190,8 @@ def main():
 
     random.seed(args.seed)
     np.random.seed(args.seed)
-    device = torch.device("cuda:{}".format(args.pth_gpu_id))
+    # device = torch.device("cuda:{}".format(args.pth_gpu_id))
+    device = torch.device("cpu")
     logger.add_filehandler(log_file)
 
     if not args.eval_only:
@@ -204,10 +202,8 @@ def main():
     for p in sorted(list(vars(args))):
         logger.info("{}: {}".format(p, getattr(args, p)))
 
-    if args.env_type == "gibson" or args.env_type == "interactive_gibson":
+    if args.env_type == "gibson":
         config_file = os.path.join(os.path.dirname(gibson2.__file__), "../examples/configs", args.config_file)
-    elif args.env_type == "toy":
-        config_file = os.path.join(os.path.dirname(hrl4in.__file__), 'envs/toy_env', args.config_file)
 
     assert os.path.isfile(config_file), "config file does not exist: {}".format(config_file)
 
@@ -231,20 +227,7 @@ def main():
                                    physics_timestep=args.physics_timestep,
                                    automatic_reset=True,
                                    device_idx=device_idx)
-        elif args.env_type == "interactive_gibson":
-            return InteractiveNavigateEnv(config_file=config_file,
-                                          mode=env_mode,
-                                          action_timestep=args.action_timestep,
-                                          physics_timestep=args.physics_timestep,
-                                          automatic_reset=True,
-                                          random_position=args.random_position,
-                                          device_idx=device_idx)
-        elif args.env_type == "toy":
-            return ToyEnv(config_file=config_file,
-                          should_normalize_state=True,
-                          automatic_reset=True,
-                          visualize=False)
-
+        
     sim_gpu_id = [int(gpu_id) for gpu_id in args.sim_gpu_id.split(",")]
     env_id_to_which_gpu = np.linspace(0,
                                       len(sim_gpu_id),
@@ -262,10 +245,8 @@ def main():
     print(train_envs.observation_space, train_envs.action_space)
 
     # (output_channel, kernel_size, stride, padding)
-    if args.env_type == "gibson" or args.env_type == "interactive_gibson":
+    if args.env_type == "gibson":
         cnn_layers_params = [(32, 8, 4, 0), (64, 4, 2, 0), (64, 3, 1, 0)]
-    elif args.env_type == "toy":
-        cnn_layers_params = [(32, 3, 1, 1), (32, 3, 1, 1), (32, 3, 1, 1)]
 
     actor_critic = Policy(
         observation_space=train_envs.observation_space,
