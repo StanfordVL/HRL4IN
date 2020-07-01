@@ -36,7 +36,7 @@
 #################
 # Have SLURM send you an email when the job ends or fails, careful, the email could end up in your clutter folder
 # Also, if you submit hundreds of jobs at once you will get hundreds of emails.
-#SBATCH --mail-type=END,FAIL # notifications for job done & fail
+#SBATCH --mail-type=BEGIN,END,FAIL # notifications for job done & fail
 # Remember to change this to your email
 #SBATCH --mail-user=yveys@caltech.edu
 # list out some useful information
@@ -53,7 +53,6 @@ source activate ../envs/py3-igibson
 export OPENAI_LOG_FORMAT='stdout,log,csv,tensorboard'
 
 cd /cvgl2/u/yveys/MMLearning
-git pull 
 
 cd /cvgl2/u/yveys/MMLearning/hrl4in
 ./run_train_ppo.sh
