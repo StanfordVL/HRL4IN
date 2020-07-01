@@ -43,10 +43,10 @@ def evaluate(envs,
     episode_success_rates = torch.zeros(envs._num_envs, 1, device=device)
     episode_lengths = torch.zeros(envs._num_envs, 1, device=device)
     episode_collision_steps = torch.zeros(envs._num_envs, 1, device=device)
-    episode_total_energy_costs = torch.zeros(envs._num_envs, 1, device=device)
-    episode_avg_energy_costs = torch.zeros(envs._num_envs, 1, device=device)
-    episode_stage_open_door = torch.zeros(envs._num_envs, 1, device=device)
-    episode_stage_to_target = torch.zeros(envs._num_envs, 1, device=device)
+    #episode_total_energy_costs = torch.zeros(envs._num_envs, 1, device=device)
+    #episode_avg_energy_costs = torch.zeros(envs._num_envs, 1, device=device)
+    #episode_stage_open_door = torch.zeros(envs._num_envs, 1, device=device)
+    #episode_stage_to_target = torch.zeros(envs._num_envs, 1, device=device)
 
     episode_counts = torch.zeros(envs._num_envs, 1, device=device)
     current_episode_reward = torch.zeros(envs._num_envs, 1, device=device)
@@ -97,6 +97,7 @@ def evaluate(envs,
             dtype=torch.float,
             device=device
         )
+        '''
         total_energy_cost = torch.tensor(
             [[float(info["energy_cost"])] if done and "energy_cost" in info else [0.0]
              for done, info in zip(dones, infos)],
@@ -123,16 +124,16 @@ def evaluate(envs,
             dtype=torch.float,
             device=device
         )
-
+        '''
         current_episode_reward += rewards
         episode_rewards += (1 - masks) * current_episode_reward
         episode_success_rates += success_masks
         episode_lengths += lengths
         episode_collision_steps += collision_steps
-        episode_total_energy_costs += total_energy_cost
-        episode_avg_energy_costs += avg_energy_cost
-        episode_stage_open_door += stage_open_door
-        episode_stage_to_target += stage_to_target
+        #episode_total_energy_costs += total_energy_cost
+        #episode_avg_energy_costs += avg_energy_cost
+        #episode_stage_open_door += stage_open_door
+        #episode_stage_to_target += stage_to_target
         episode_counts += 1 - masks
         current_episode_reward *= masks
 
@@ -140,12 +141,13 @@ def evaluate(envs,
     episode_success_rate_mean = (episode_success_rates.sum() / episode_counts.sum()).item()
     episode_length_mean = (episode_lengths.sum() / episode_counts.sum()).item()
     episode_collision_step_mean = (episode_collision_steps.sum() / episode_counts.sum()).item()
-    episode_total_energy_cost_mean = (episode_total_energy_costs.sum() / episode_counts.sum()).item()
-    episode_avg_energy_cost_mean = (episode_avg_energy_costs.sum() / episode_counts.sum()).item()
-    episode_stage_open_door_mean = (episode_stage_open_door.sum() / episode_counts.sum()).item()
-    episode_stage_to_target_mean = (episode_stage_to_target.sum() / episode_counts.sum()).item()
+    #episode_total_energy_cost_mean = (episode_total_energy_costs.sum() / episode_counts.sum()).item()
+    #episode_avg_energy_cost_mean = (episode_avg_energy_costs.sum() / episode_counts.sum()).item()
+    #episode_stage_open_door_mean = (episode_stage_open_door.sum() / episode_counts.sum()).item()
+    #episode_stage_to_target_mean = (episode_stage_to_target.sum() / episode_counts.sum()).item()
 
     if eval_only:
+        '''
         print("EVAL: num_eval_episodes: {}\treward: {:.3f}\t"
               "success_rate: {:.3f}\tepisode_length: {:.3f}\tcollision_step: {:.3f}\t"
               "total_energy_cost: {:.3f}\tavg_energy_cost: {:.3f}\t"
@@ -153,6 +155,12 @@ def evaluate(envs,
             num_eval_episodes, episode_reward_mean, episode_success_rate_mean, episode_length_mean,
             episode_collision_step_mean, episode_total_energy_cost_mean, episode_avg_energy_cost_mean,
             episode_stage_open_door_mean, episode_stage_to_target_mean,
+        ))
+        '''
+        print("EVAL: num_eval_episodes: {}\treward: {:.3f}\t"
+              "success_rate: {:.3f}\tepisode_length: {:.3f}\tcollision_step: {:.3f}\t".format(
+            num_eval_episodes, episode_reward_mean, episode_success_rate_mean, episode_length_mean,
+            episode_collision_step_mean, 
         ))
     else:
         logger.info("EVAL: num_eval_episodes: {}\tupdate: {}\t"
@@ -163,19 +171,19 @@ def evaluate(envs,
         writer.add_scalar("eval/updates/success_rate", episode_success_rate_mean, global_step=update)
         writer.add_scalar("eval/updates/episode_length", episode_length_mean, global_step=update)
         writer.add_scalar("eval/updates/collision_step", episode_collision_step_mean, global_step=update)
-        writer.add_scalar("eval/updates/total_energy_cost", episode_total_energy_cost_mean, global_step=update)
-        writer.add_scalar("eval/updates/avg_energy_cost", episode_avg_energy_cost_mean, global_step=update)
-        writer.add_scalar("eval/updates/stage_open_door", episode_stage_open_door_mean, global_step=update)
-        writer.add_scalar("eval/updates/stage_to_target", episode_stage_to_target_mean, global_step=update)
+        #writer.add_scalar("eval/updates/total_energy_cost", episode_total_energy_cost_mean, global_step=update)
+        #writer.add_scalar("eval/updates/avg_energy_cost", episode_avg_energy_cost_mean, global_step=update)
+        #writer.add_scalar("eval/updates/stage_open_door", episode_stage_open_door_mean, global_step=update)
+        #writer.add_scalar("eval/updates/stage_to_target", episode_stage_to_target_mean, global_step=update)
 
         writer.add_scalar("eval/env_steps/reward", episode_reward_mean, global_step=count_steps)
         writer.add_scalar("eval/env_steps/success_rate", episode_success_rate_mean, global_step=count_steps)
         writer.add_scalar("eval/env_steps/episode_length", episode_length_mean, global_step=count_steps)
         writer.add_scalar("eval/env_steps/collision_step", episode_collision_step_mean, global_step=count_steps)
-        writer.add_scalar("eval/env_steps/total_energy_cost", episode_total_energy_cost_mean, global_step=count_steps)
-        writer.add_scalar("eval/env_steps/avg_energy_cost", episode_avg_energy_cost_mean, global_step=count_steps)
-        writer.add_scalar("eval/env_steps/stage_open_door", episode_stage_open_door_mean, global_step=count_steps)
-        writer.add_scalar("eval/env_steps/stage_to_target", episode_stage_to_target_mean, global_step=count_steps)
+        #writer.add_scalar("eval/env_steps/total_energy_cost", episode_total_energy_cost_mean, global_step=count_steps)
+        #writer.add_scalar("eval/env_steps/avg_energy_cost", episode_avg_energy_cost_mean, global_step=count_steps)
+        #writer.add_scalar("eval/env_steps/stage_open_door", episode_stage_open_door_mean, global_step=count_steps)
+        #writer.add_scalar("eval/env_steps/stage_to_target", episode_stage_to_target_mean, global_step=count_steps)
 
 
 def main():
@@ -190,8 +198,8 @@ def main():
 
     random.seed(args.seed)
     np.random.seed(args.seed)
-    # device = torch.device("cuda:{}".format(args.pth_gpu_id))
-    device = torch.device("cpu")
+    device = torch.device("cuda:{}".format(args.pth_gpu_id))
+    #device = torch.device("cpu")
     logger.add_filehandler(log_file)
 
     if not args.eval_only:
@@ -315,10 +323,10 @@ def main():
     episode_success_rates = torch.zeros(train_envs._num_envs, 1)
     episode_lengths = torch.zeros(train_envs._num_envs, 1)
     episode_collision_steps = torch.zeros(train_envs._num_envs, 1)
-    episode_total_energy_costs = torch.zeros(train_envs._num_envs, 1, device=device)
-    episode_avg_energy_costs = torch.zeros(train_envs._num_envs, 1, device=device)
-    episode_stage_open_doors = torch.zeros(train_envs._num_envs, 1, device=device)
-    episode_stage_to_targets = torch.zeros(train_envs._num_envs, 1, device=device)
+    #episode_total_energy_costs = torch.zeros(train_envs._num_envs, 1, device=device)
+    #episode_avg_energy_costs = torch.zeros(train_envs._num_envs, 1, device=device)
+    #episode_stage_open_doors = torch.zeros(train_envs._num_envs, 1, device=device)
+    #episode_stage_to_targets = torch.zeros(train_envs._num_envs, 1, device=device)
     episode_counts = torch.zeros(train_envs._num_envs, 1)
     current_episode_reward = torch.zeros(train_envs._num_envs, 1)
 
@@ -326,10 +334,10 @@ def main():
     window_episode_success_rates = deque()
     window_episode_lengths = deque()
     window_episode_collision_steps = deque()
-    window_episode_total_energy_costs = deque()
-    window_episode_avg_energy_costs = deque()
-    window_episode_stage_open_doors = deque()
-    window_episode_stage_to_targets = deque()
+    #window_episode_total_energy_costs = deque()
+    #window_episode_avg_energy_costs = deque()
+    #window_episode_stage_open_doors = deque()
+    #window_episode_stage_to_targets = deque()
     window_episode_counts = deque()
 
     t_start = time()
@@ -405,6 +413,7 @@ def main():
                  for done, info in zip(dones, infos)],
                 dtype=torch.float,
             )
+            '''
             total_energy_cost = torch.tensor(
                 [[float(info["energy_cost"])] if done and "energy_cost" in info else [0.0]
                  for done, info in zip(dones, infos)],
@@ -431,16 +440,16 @@ def main():
                 dtype=torch.float,
                 device=device
             )
-
+            '''
             current_episode_reward += rewards
             episode_rewards += (1 - masks) * current_episode_reward
             episode_success_rates += success_masks
             episode_lengths += lengths
             episode_collision_steps += collision_steps
-            episode_total_energy_costs += total_energy_cost
-            episode_avg_energy_costs += avg_energy_cost
-            episode_stage_open_doors += stage_open_door
-            episode_stage_to_targets += stage_to_target
+            #episode_total_energy_costs += total_energy_cost
+            #episode_avg_energy_costs += avg_energy_cost
+            #episode_stage_open_doors += stage_open_door
+            #episode_stage_to_targets += stage_to_target
             episode_counts += 1 - masks
             current_episode_reward *= masks
 
@@ -471,19 +480,20 @@ def main():
             window_episode_success_rates.popleft()
             window_episode_lengths.popleft()
             window_episode_collision_steps.popleft()
-            window_episode_total_energy_costs.popleft()
-            window_episode_avg_energy_costs.popleft()
-            window_episode_stage_open_doors.popleft()
-            window_episode_stage_to_targets.popleft()
+            #window_episode_total_energy_costs.popleft()
+            #window_episode_avg_energy_costs.popleft()
+            #window_episode_stage_open_doors.popleft()
+            #window_episode_stage_to_targets.popleft()
             window_episode_counts.popleft()
+
         window_episode_reward.append(episode_rewards.clone())
         window_episode_success_rates.append(episode_success_rates.clone())
         window_episode_lengths.append(episode_lengths.clone())
         window_episode_collision_steps.append(episode_collision_steps.clone())
-        window_episode_total_energy_costs.append(episode_total_energy_costs.clone())
-        window_episode_avg_energy_costs.append(episode_avg_energy_costs.clone())
-        window_episode_stage_open_doors.append(episode_stage_open_doors.clone())
-        window_episode_stage_to_targets.append(episode_stage_to_targets.clone())
+        #window_episode_total_energy_costs.append(episode_total_energy_costs.clone())
+        #window_episode_avg_energy_costs.append(episode_avg_energy_costs.clone())
+        #window_episode_stage_open_doors.append(episode_stage_open_doors.clone())
+        #window_episode_stage_to_targets.append(episode_stage_to_targets.clone())
         window_episode_counts.append(episode_counts.clone())
 
         t_update_model = time()
@@ -532,10 +542,10 @@ def main():
             window_success_rates = (window_episode_success_rates[-1] - window_episode_success_rates[0]).sum()
             window_lengths = (window_episode_lengths[-1] - window_episode_lengths[0]).sum()
             window_collision_steps = (window_episode_collision_steps[-1] - window_episode_collision_steps[0]).sum()
-            window_total_energy_costs = (window_episode_total_energy_costs[-1] - window_episode_total_energy_costs[0]).sum()
-            window_avg_energy_costs = (window_episode_avg_energy_costs[-1] - window_episode_avg_energy_costs[0]).sum()
-            window_stage_open_doors = (window_episode_stage_open_doors[-1] - window_episode_stage_open_doors[0]).sum()
-            window_stage_to_targets = (window_episode_stage_to_targets[-1] - window_episode_stage_to_targets[0]).sum()
+            #window_total_energy_costs = (window_episode_total_energy_costs[-1] - window_episode_total_energy_costs[0]).sum()
+            #window_avg_energy_costs = (window_episode_avg_energy_costs[-1] - window_episode_avg_energy_costs[0]).sum()
+            #window_stage_open_doors = (window_episode_stage_open_doors[-1] - window_episode_stage_open_doors[0]).sum()
+            #window_stage_to_targets = (window_episode_stage_to_targets[-1] - window_episode_stage_to_targets[0]).sum()
             window_counts = (window_episode_counts[-1] - window_episode_counts[0]).sum()
 
             if window_counts > 0:
@@ -543,11 +553,12 @@ def main():
                 success_rate_mean = (window_success_rates / window_counts).item()
                 lengths_mean = (window_lengths / window_counts).item()
                 collision_steps_mean = (window_collision_steps / window_counts).item()
-                total_energy_costs_mean = (window_total_energy_costs / window_counts).item()
-                avg_energy_costs_mean = (window_avg_energy_costs / window_counts).item()
-                stage_open_doors_mean = (window_stage_open_doors / window_counts).item()
-                stage_to_targets_mean = (window_stage_to_targets / window_counts).item()
+                #total_energy_costs_mean = (window_total_energy_costs / window_counts).item()
+                #avg_energy_costs_mean = (window_avg_energy_costs / window_counts).item()
+                #stage_open_doors_mean = (window_stage_open_doors / window_counts).item()
+                #stage_to_targets_mean = (window_stage_to_targets / window_counts).item()
 
+                '''
                 logger.info(
                     "average window size {}\treward: {:.3f}\tsuccess_rate: {:.3f}\tepisode length: {:.3f}\t"
                     "collision_step: {:.3f}\ttotal_energy_cost: {:.3f}\tavg_energy_cost: {:.3f}\t"
@@ -563,23 +574,36 @@ def main():
                         stage_to_targets_mean,
                     )
                 )
+                '''
+
+                logger.info(
+                    "average window size {}\treward: {:.3f}\tsuccess_rate: {:.3f}\tepisode length: {:.3f}\t"
+                    "collision_step: {:.3f}".format(
+                        len(window_episode_reward),
+                        reward_mean,
+                        success_rate_mean,
+                        lengths_mean,
+                        collision_steps_mean,
+                    )
+                )
+
                 writer.add_scalar("train/updates/reward", reward_mean, global_step=update)
                 writer.add_scalar("train/updates/success_rate", success_rate_mean, global_step=update)
                 writer.add_scalar("train/updates/episode_length", lengths_mean, global_step=update)
                 writer.add_scalar("train/updates/collision_step", collision_steps_mean, global_step=update)
-                writer.add_scalar("train/updates/total_energy_cost", total_energy_costs_mean, global_step=update)
-                writer.add_scalar("train/updates/avg_energy_cost", avg_energy_costs_mean, global_step=update)
-                writer.add_scalar("train/updates/stage_open_door", stage_open_doors_mean, global_step=update)
-                writer.add_scalar("train/updates/stage_to_target", stage_to_targets_mean, global_step=update)
+                #writer.add_scalar("train/updates/total_energy_cost", total_energy_costs_mean, global_step=update)
+                #writer.add_scalar("train/updates/avg_energy_cost", avg_energy_costs_mean, global_step=update)
+                #writer.add_scalar("train/updates/stage_open_door", stage_open_doors_mean, global_step=update)
+                #writer.add_scalar("train/updates/stage_to_target", stage_to_targets_mean, global_step=update)
 
                 writer.add_scalar("train/env_steps/reward", reward_mean, global_step=count_steps)
                 writer.add_scalar("train/env_steps/success_rate", success_rate_mean, global_step=count_steps)
                 writer.add_scalar("train/env_steps/episode_length", lengths_mean, global_step=count_steps)
                 writer.add_scalar("train/env_steps/collision_step", collision_steps_mean, global_step=count_steps)
-                writer.add_scalar("train/env_steps/total_energy_cost", total_energy_costs_mean, global_step=count_steps)
-                writer.add_scalar("train/env_steps/avg_energy_cost", avg_energy_costs_mean, global_step=count_steps)
-                writer.add_scalar("train/env_steps/stage_open_door", stage_open_doors_mean, global_step=count_steps)
-                writer.add_scalar("train/env_steps/stage_to_target", stage_to_targets_mean, global_step=count_steps)
+                #writer.add_scalar("train/env_steps/total_energy_cost", total_energy_costs_mean, global_step=count_steps)
+                #writer.add_scalar("train/env_steps/avg_energy_cost", avg_energy_costs_mean, global_step=count_steps)
+                #writer.add_scalar("train/env_steps/stage_open_door", stage_open_doors_mean, global_step=count_steps)
+                #writer.add_scalar("train/env_steps/stage_to_target", stage_to_targets_mean, global_step=count_steps)
             else:
                 logger.info("No episodes finish in current window")
 

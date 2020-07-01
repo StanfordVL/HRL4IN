@@ -42,4 +42,5 @@ python -u train_ppo.py \
    --env-type "gibson" \
    --config-file "jr2_reaching.yaml" \
    --arena "stadium" \
-   --num-eval-episodes 1
+   --num-eval-episodes 1 \
+   --env-mode "headless"
