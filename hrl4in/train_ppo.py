@@ -220,7 +220,8 @@ def main():
 
     def load_env(env_mode, device_idx):
         if args.env_type == "gibson":
-            if args.random_position:
+            if args.random_height:
+                print("RANDOM")
                 return NavigateRandomEnv(config_file=config_file,
                                          mode=env_mode,
                                          action_timestep=args.action_timestep,
@@ -229,6 +230,7 @@ def main():
                                          automatic_reset=True,
                                          device_idx=device_idx)
             else:
+                print("NOT RANDOM")
                 return NavigateEnv(config_file=config_file,
                                    mode=env_mode,
                                    action_timestep=args.action_timestep,
@@ -245,12 +247,12 @@ def main():
     train_envs = [lambda device_idx=sim_gpu_id[env_id_to_which_gpu[env_id]]: load_env("headless", device_idx)
                   for env_id in range(args.num_train_processes)]
     train_envs = ParallelNavEnvironment(train_envs, blocking=False)
+
     eval_envs = [lambda device_idx=sim_gpu_id[env_id_to_which_gpu[env_id]]: load_env("headless", device_idx)
                  for env_id in range(args.num_train_processes, args.num_train_processes + args.num_eval_processes - 1)]
     eval_envs += [lambda: load_env(args.env_mode, sim_gpu_id[env_id_to_which_gpu[-1]])]
     eval_envs = ParallelNavEnvironment(eval_envs, blocking=False)
-
-    print(train_envs.observation_space, train_envs.action_space)
+    
 
     # (output_channel, kernel_size, stride, padding)
     if args.env_type == "gibson":

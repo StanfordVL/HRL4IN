@@ -43,4 +43,5 @@ python -u train_ppo.py \
    --config-file "jr2_reaching.yaml" \
    --arena "stadium" \
    --num-eval-episodes 1 \
-   --env-mode "headless"
+   --env-mode "headless" \
+   --random-height

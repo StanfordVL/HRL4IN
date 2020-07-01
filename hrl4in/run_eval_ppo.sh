@@ -45,5 +45,5 @@ python -u train_ppo.py \
    --arena "stadium" \
    --num-eval-episodes 100 \
    --env-mode "headless" \
-   --eval-only
+   --eval-only 
 

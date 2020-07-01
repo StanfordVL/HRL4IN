@@ -53,6 +53,7 @@ source activate ../envs/py3-igibson
 export OPENAI_LOG_FORMAT='stdout,log,csv,tensorboard'
 
 cd /cvgl2/u/yveys/MMLearning
+git pull
 
 cd /cvgl2/u/yveys/MMLearning/hrl4in
 ./run_train_ppo.sh
