@@ -64,6 +64,10 @@ def evaluate(envs,
                 update=0,
             )
         actions_np = actions.cpu().numpy()
+        #print(actions_np)
+        if (np.isnan(actions_np).any()):
+            actions_np = [[0,0,0,0,0,0,0]]
+            print("Replaced")
         outputs = envs.step(actions_np)
 
         observations, rewards, dones, infos = [list(x) for x in zip(*outputs)]
