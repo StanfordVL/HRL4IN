@@ -15,7 +15,7 @@ failed_pnt="0.0"      # 0.0, -0.2
 num_steps="1024"
 ext_col="0.0"         # 0.0, 0.5, 1.0, 2.0
 name="exp"
-run="5"
+run="6"
 
 log_dir="hrl_reward_"$reward_type"_pos_"$pos"_sgm_arm_world_irs_"$irs"_sgr_"$sgr"_lr_"$lr"_meta_lr_"$meta_lr"_fr_lr_"$fr_lr"_death_"$death"_init_std_"$init_std_dev_xy"_"$init_std_dev_xy"_"$init_std_dev_z"_failed_pnt_"$failed_pnt"_nsteps_"$num_steps"_ext_col_"$ext_col"_6x6_from_scr_"$name"_run_"$run
 echo $log_dir
@@ -37,7 +37,7 @@ python -u train_ppo.py \
    --use-linear-clip-decay \
    --entropy-coef 0.01 \
    --log-interval 1 \
-   --checkpoint-index 30 \
+   --checkpoint-index -1 \
    --experiment-folder "ckpt/"$log_dir \
    --checkpoint-interval 10 \
    --env-type "gibson" \

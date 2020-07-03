@@ -198,8 +198,8 @@ def main():
 
     random.seed(args.seed)
     np.random.seed(args.seed)
-    #device = torch.device("cuda:{}".format(args.pth_gpu_id))
-    device = torch.device("cpu")
+    device = torch.device("cuda:{}".format(args.pth_gpu_id))
+    #device = torch.device("cpu")
     logger.add_filehandler(log_file)
 
     if not args.eval_only:
@@ -222,7 +222,7 @@ def main():
         if args.env_type == "gibson":
             if args.random_height:
                 print("RANDOM")
-                return NavigateRandomEnv(config_file=config_file,
+                return NavigateRandomHeightEnv(config_file=config_file,
                                          mode=env_mode,
                                          action_timestep=args.action_timestep,
                                          physics_timestep=args.physics_timestep,
