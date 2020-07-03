@@ -23,7 +23,7 @@ from hrl4in.utils.args import *
 
 import gibson2
 from gibson2.envs.parallel_env import ParallelNavEnvironment
-from gibson2.envs.locomotor_env import NavigateEnv, NavigateRandomEnv
+from gibson2.envs.locomotor_env import NavigateEnv, NavigateRandomEnv, NavigateRandomHeightEnv
 
 def evaluate(envs,
              actor_critic,
@@ -226,7 +226,7 @@ def main():
         if args.env_type == "gibson":
             if args.random_height:
                 print("RANDOM")
-                return NavigateRandomEnv(config_file=config_file,
+                return NavigateRandomHeightEnv(config_file=config_file,
                                          mode=env_mode,
                                          action_timestep=args.action_timestep,
                                          physics_timestep=args.physics_timestep,
