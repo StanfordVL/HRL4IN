@@ -2,24 +2,13 @@
 
 gpu="0"
 reward_type="dense"
-pos="fixed"
-irs="30.0"
-sgr="0.0"
+pos="random"
 lr="1e-4"
-meta_lr="1e-5"        # 1e-4, 1e-5
-fr_lr="0"             # 0, 100
-death="30.0"
-init_std_dev_xy="0.6" # 0.6, 1.2
-init_std_dev_z="0.1"
-failed_pnt="0.0"      # 0.0, -0.2
 num_steps="1024"
-ext_col="0.0"         # 0.0, 0.5, 1.0, 2.0
-name="exp"
-run="7"
+run="jr_interactive_nav"
 
-log_dir="hrl_reward_"$reward_type"_pos_"$pos"_sgm_arm_world_irs_"$irs"_sgr_"$sgr"_lr_"$lr"_meta_lr_"$meta_lr"_fr_lr_"$fr_lr"_death_"$death"_init_std_"$init_std_dev_xy"_"$init_std_dev_xy"_"$init_std_dev_z"_failed_pnt_"$failed_pnt"_nsteps_"$num_steps"_ext_col_"$ext_col"_6x6_from_scr_"$name"_run_"$run
+log_dir="reward_"$reward_type"_pos_"$pos"_lr_"$lr"_nsteps_"$num_steps"_run_"$run
 echo $log_dir
-
 
 python -u train_ppo.py \
    --use-gae \
@@ -37,11 +26,11 @@ python -u train_ppo.py \
    --use-linear-clip-decay \
    --entropy-coef 0.01 \
    --log-interval 1 \
-   --checkpoint-index -1 \
+   --checkpoint-index 870 \
    --experiment-folder "ckpt/"$log_dir \
    --checkpoint-interval 10 \
    --env-type "gibson" \
-   --config-file "jr2_reaching.yaml" \
+   --config-file "jr_interactive_nav.yaml" \
    --arena "stadium" \
    --num-eval-episodes 100 \
    --env-mode "gui" \
