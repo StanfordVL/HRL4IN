@@ -10,14 +10,14 @@
 #SBATCH --ntasks=1
 #################  
 #a file for job output, you can check job progress, append the job ID with %j to make it unique
-#SBATCH --output=/cvgl2/u/yveys/MMLearning_Logs/%j.out
+#SBATCH --output=/cvgl2/u/yveys/Logs/%j.out
 #################
 # a file for errors from the job
-#SBATCH --error=/cvgl2/u/yveys/MMLearning_Logs/%j.err
+#SBATCH --error=/cvgl2/u/yveys/Logs/%j.err
 #################
 #time you think you need; default is 2 hours
 #format could be dd-hh:mm:ss, hh:mm:ss, mm:ss, or mm
-#SBATCH --time=10:00:00
+#SBATCH --time=12:00:00
 #################
 # Quality of Service (QOS); think of it as sending your job into a special queue; --qos=long for with a max job length of 7 days.
 # uncomment ##SBATCH --qos=long if you want your job to run longer than 48 hours, which is the default for normal partition,  
@@ -52,8 +52,11 @@ cd /cvgl2/u/yveys/anaconda3/bin/
 source activate ../envs/py3-igibson
 export OPENAI_LOG_FORMAT='stdout,log,csv,tensorboard'
 
+cd /cvgl2/u/yveys/iGibson
+git pull
+
 cd /cvgl2/u/yveys/MMLearning
-#git pull
+git pull
 
 cd /cvgl2/u/yveys/MMLearning/hrl4in
 ./run_train_ppo.sh

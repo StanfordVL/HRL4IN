@@ -1,13 +1,16 @@
 #!/bin/bash
 
 gpu="0"
-reward_type="dense"
-pos="random"
+pos="rand_h"
+reward_type="l2"
+tol=0.06
+success_reward=10.0
+potential_reward=1.0
+gamma=0.99 
 lr="1e-4"
-num_steps="1024"
-run="jr2_reaching_2"
+num_steps="250"
 
-log_dir="reward_"$reward_type"_pos_"$pos"_lr_"$lr"_nsteps_"$num_steps"_run_"$run
+log_dir="pos_"$pos"_reward_"$reward_type"_tol_"$tol"_suc_rew_"$success_reward"_pot_rew_"$potential_reward"_gamma_"$gamma"_lr_"$lr"_nsteps_"$num_steps
 echo $log_dir
 
 python -u train_ppo.py \
@@ -26,14 +29,14 @@ python -u train_ppo.py \
    --use-linear-clip-decay \
    --entropy-coef 0.01 \
    --log-interval 1 \
-   --checkpoint-index 870 \
    --experiment-folder "ckpt/"$log_dir \
    --checkpoint-interval 10 \
+   --checkpoint-index -1 \
    --env-type "gibson" \
-   --config-file "jr2_reaching.yaml" \
+   --config-file $log_dir".yaml" \
    --arena "stadium" \
-   --num-eval-episodes 100 \
+   --num-eval-episodes 1 \
    --env-mode "gui" \
    --eval-only \
+   --gamma $gamma \
    --random-height
-

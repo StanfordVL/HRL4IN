@@ -211,7 +211,7 @@ def main():
         logger.info("{}: {}".format(p, getattr(args, p)))
 
     if args.env_type == "gibson":
-        config_file = os.path.join(os.path.dirname(gibson2.__file__), "../examples/configs", args.config_file)
+        config_file = os.path.join(os.path.dirname(gibson2.__file__), "../examples/configs/mm", args.config_file)
 
     assert os.path.isfile(config_file), "config file does not exist: {}".format(config_file)
 
