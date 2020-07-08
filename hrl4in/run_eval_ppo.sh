@@ -4,13 +4,14 @@ gpu="0"
 pos="rand_h"
 reward_type="l2"
 tol=0.1
-success_reward=100.0
+success_reward=20.0
 potential_reward=1.0
 gamma=0.99 
 lr="1e-4"
 num_steps="250"
+speed="0.025"
 
-log_dir="pos_"$pos"_rwd_"$reward_type"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps
+log_dir="pos_"$pos"_rwd_"$reward_type"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
 echo $log_dir
 
 python -u train_ppo.py \
