@@ -3,8 +3,8 @@
 gpu="0"
 pos="rand_h"
 reward_type="l2"
-tol=0.15
-success_reward=10.0
+tol=0.1
+success_reward=100.0
 potential_reward=1.0
 gamma=0.99 
 lr="1e-4"
