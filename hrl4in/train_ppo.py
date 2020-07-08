@@ -198,8 +198,8 @@ def main():
 
     random.seed(args.seed)
     np.random.seed(args.seed)
-    device = torch.device("cuda:{}".format(args.pth_gpu_id))
-    #device = torch.device("cpu")
+    #device = torch.device("cuda:{}".format(args.pth_gpu_id))
+    device = torch.device("cpu")
     logger.add_filehandler(log_file)
 
     if not args.eval_only:
@@ -211,7 +211,7 @@ def main():
         logger.info("{}: {}".format(p, getattr(args, p)))
 
     if args.env_type == "gibson":
-        config_file = os.path.join(os.path.dirname(gibson2.__file__), "../examples/configs/mm", args.config_file)
+        config_file = os.path.join("configs/", args.config_file)
 
     assert os.path.isfile(config_file), "config file does not exist: {}".format(config_file)
 

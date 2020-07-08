@@ -35,7 +35,7 @@ python -u train_ppo.py \
    --env-type "gibson" \
    --config-file $log_dir".yaml" \
    --arena "stadium" \
-   --num-eval-episodes 1 \
+   --num-eval-episodes 100 \
    --env-mode "gui" \
    --eval-only \
    --gamma $gamma \
