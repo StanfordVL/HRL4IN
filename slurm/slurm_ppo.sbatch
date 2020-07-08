@@ -56,7 +56,7 @@ cd /cvgl2/u/yveys/iGibson
 git pull
 
 cd /cvgl2/u/yveys/MMLearning
-git pull
+#git pull
 
 cd /cvgl2/u/yveys/MMLearning/hrl4in
 ./run_train_ppo.sh
