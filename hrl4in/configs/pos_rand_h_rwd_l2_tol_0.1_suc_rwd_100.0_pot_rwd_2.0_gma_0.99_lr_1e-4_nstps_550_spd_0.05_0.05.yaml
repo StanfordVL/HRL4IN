@@ -3,8 +3,8 @@ scene: stadium
 
 # robot
 robot: JR2_Kinova
-wheel_velocity: 0.025
-arm_velocity: 0.6
+wheel_velocity: 0.05
+arm_velocity: 0.05
 
 # task, observation and action
 task: reaching 
@@ -21,7 +21,7 @@ additional_states_dim: 33
 
 # reward
 reward_type: l2
-success_reward: 50.0
+success_reward: 100.0
 slack_reward: -0.01
 potential_reward_weight: 2.0
 collision_reward_weight: -0.1
@@ -33,7 +33,7 @@ discount_factor: 0.99
 
 # termination condition
 dist_tol: 0.1
-max_step: 350
+max_step: 550
 
 # sensor
 output: [sensor]
