@@ -1,17 +1,17 @@
 #!/bin/bash
 
 gpu="0"
-pos="rand_h"
+pos="rh"
 reward_type="l2"
 tol=0.1
 success_reward=100.0
 potential_reward=2.0
 gamma=0.99 
 lr="1e-4"
-num_steps="350"
-speed="0.025"
+num_steps="500"
+speed="0.075_0.2"
 
-log_dir="pos_"$pos"_rwd_"$reward_type"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
+log_dir="pos_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
 echo $log_dir
 
 python -u train_ppo.py \
@@ -39,4 +39,4 @@ python -u train_ppo.py \
    --num-eval-episodes 1 \
    --env-mode "headless" \
    --gamma $gamma \
-   --random-height
+   --random-height   
