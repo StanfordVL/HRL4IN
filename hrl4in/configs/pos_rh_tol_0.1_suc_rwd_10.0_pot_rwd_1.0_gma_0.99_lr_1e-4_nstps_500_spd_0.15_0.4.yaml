@@ -1,8 +1,8 @@
 scene: stadium
 
 robot: JR2_Kinova
-wheel_velocity: 0.015
-arm_velocity: 0.2
+wheel_velocity: 0.15
+arm_velocity: 0.4
 
 task: reaching
 fisheye: false

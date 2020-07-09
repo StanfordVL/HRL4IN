@@ -1,7 +1,7 @@
 scene: stadium
 
 robot: JR2_Kinova
-wheel_velocity: 0.015
+wheel_velocity: 0.15
 arm_velocity: 0.4
 
 task: reaching
@@ -17,7 +17,7 @@ is_discrete: false
 additional_states_dim: 33
 
 reward_type: l2
-success_reward: 100.0
+success_reward: 10.0
 slack_reward: -0.01
 potential_reward_weight: 2.0
 collision_reward_weight: 0.0

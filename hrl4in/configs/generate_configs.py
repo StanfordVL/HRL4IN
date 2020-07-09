@@ -7,7 +7,7 @@ if __name__ == "__main__":
 	lr="1e-4"
 	num_steps="500"
 
-	for wheel_vel in [0.075, 0.015]:
+	for wheel_vel in [0.075, 0.15]:
 		for arm_vel in [0.2, 0.4]:
 			for suc_rwd in [10.0, 100.0]:
 				for pot_rwd in [1.0, 2.0]:
