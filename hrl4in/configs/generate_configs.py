@@ -6,7 +6,7 @@ if __name__ == "__main__":
 	lr="1e-4"
 	num_steps="200"
 
-	for tol in [0.15, 0.2]:
+	for tol in [0.3]:
 		for wheel_vel in [0.075]:
 			for arm_vel in [0.25, 0.5]:
 				for suc_rwd in [100.0]:
