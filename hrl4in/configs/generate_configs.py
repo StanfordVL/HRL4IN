@@ -7,11 +7,11 @@ if __name__ == "__main__":
 	num_steps="200"
 
 	for tol in [0.2]:
-		for wheel_vel in [0.1]:
-			for arm_vel in [0.2,0.4]:
-				for suc_rwd in [200,500,1000]:
-					for pot_rwd in [2.0]:
-						for col_rwd in [0.0,-0.1]:
+		for wheel_vel in [0.075]:
+			for arm_vel in [0.2]:
+				for suc_rwd in [10.0,20.0]:
+					for pot_rwd in [1.0,2.0]:
+						for col_rwd in [0.0]:
 
 							file_name = "pos_{}_tol_{}_suc_rwd_{}_pot_rwd_{}_col_rwd_{}_gma_{}_lr_{}_nstps_{}_spd_{}_{}.yaml".format(pos,tol,suc_rwd,pot_rwd,col_rwd,gamma,lr,num_steps,wheel_vel,arm_vel)
 							

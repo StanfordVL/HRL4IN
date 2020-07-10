@@ -17,7 +17,7 @@
 gpu="0"
 pos="rh"
 reward_type="l2"
-tol=0.1
+tol=0.3
 success_reward=100.0
 potential_reward=2.0
 col_reward=0.0
