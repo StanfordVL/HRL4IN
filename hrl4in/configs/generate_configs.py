@@ -3,15 +3,15 @@ if __name__ == "__main__":
 	gpu="0"
 	pos="rh"
 	gamma=0.99 
-	lr="1e-4"
-	num_steps="150"
+	lr="3e-3"
+	num_steps="80"
 
-	for tol in [0.2,0.3]:
-		for wheel_vel in [0.075]:
-			for arm_vel in [0.4,0.7]:
+	for tol in [0.05]:
+		for wheel_vel in [0.125]:
+			for arm_vel in [0.4,0.6,0.8]:
 				for suc_rwd in [10.0]:
-					for pot_rwd in [1.0]:
-						for col_rwd in [0.0]:
+					for pot_rwd in [2.0]:
+						for col_rwd in [-0.1]:
 
 							file_name = "pos_{}_tol_{}_suc_rwd_{}_pot_rwd_{}_col_rwd_{}_gma_{}_lr_{}_nstps_{}_spd_{}_{}.yaml".format(pos,tol,suc_rwd,pot_rwd,col_rwd,gamma,lr,num_steps,wheel_vel,arm_vel)
 							
@@ -27,10 +27,10 @@ if __name__ == "__main__":
 							f.write("task: reaching\n")
 							f.write("fisheye: false\n\n")
 
-							f.write("initial_pos: [-1.0, -1.0, 0.0]\n")
+							f.write("initial_pos: [0.0, 0.0, 0.0]\n")
 							f.write("initial_orn: [0.0, 0.0, 0.0]\n\n")
 
-							f.write("target_pos: [1.0, 1.0, 1.2]\n")
+							f.write("target_pos: [2.0, 0.0, 1.2]\n")
 							f.write("target_orn: [0.0, 0.0, 0.0]\n\n")
 
 							f.write("is_discrete: false\n")
