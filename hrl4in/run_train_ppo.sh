@@ -3,14 +3,14 @@
 gpu="0"
 pos="rh"
 reward_type="l2"
-tol=0.1
-success_reward=100.0
+tol=0.3
+success_reward=10.0
 potential_reward=2.0
 col_reward=0.0
 gamma=0.99 
 lr="1e-4"
-num_steps="200"
-speed="0.075_0.25"
+num_steps="150"
+speed="0.075_0.2"
 
 log_dir="pos_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_col_rwd_"$col_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
 echo $log_dir
