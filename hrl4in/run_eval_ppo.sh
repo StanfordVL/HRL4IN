@@ -23,8 +23,8 @@ potential_reward=2.0
 col_reward=-0.1
 gamma=0.99 
 lr="1e-3"
-num_steps="80"
-speed="0.100_0.8"
+num_steps="40"
+speed="0.100_0.4"
 
 log_dir="pos_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_col_rwd_"$col_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
 echo $log_dir

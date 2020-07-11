@@ -3,8 +3,8 @@ if __name__ == "__main__":
 	gpu="0"
 	pos="rh"
 	gamma=0.99 
-	lr="1e-4"
-	num_steps="40"
+	lr="1e-3"
+	num_steps="50"
 
 	for tol in [0.05]:
 		for wheel_vel in ["0.100"]:
