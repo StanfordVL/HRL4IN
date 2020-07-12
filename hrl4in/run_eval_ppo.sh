@@ -15,14 +15,14 @@
 #echo $log_dir
 
 gpu="0"
-pos="rh"
+pos="fix_0.5"
 reward_type="l2"
 tol=0.05
 success_reward=10.0
 potential_reward=2.0
 col_reward=-0.1
 gamma=0.99 
-lr="1e-3"
+lr="1e-4"
 num_steps="40"
 speed="0.100_0.4"
 
@@ -40,7 +40,7 @@ python -u train_ppo.py \
    --num-eval-processes 1 \
    --num-steps $num_steps \
    --num-mini-batch 1 \
-   --num-updates 1000000 \
+   --num-updates 100000 \
    --use-linear-lr-decay \
    --use-linear-clip-decay \
    --entropy-coef 0.01 \
@@ -54,5 +54,4 @@ python -u train_ppo.py \
    --num-eval-episodes 100 \
    --env-mode "pbgui" \
    --eval-only \
-   --gamma $gamma \
-   --random-height
+   --gamma $gamma 
