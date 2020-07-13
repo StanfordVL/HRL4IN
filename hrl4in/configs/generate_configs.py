@@ -1,7 +1,7 @@
 
 if __name__ == "__main__":
 	gpu="0"
-	pos="fix_add_1.2"
+	pos="rdh_s_1.2"
 	gamma=0.99 
 	num_steps="60"
 
@@ -34,7 +34,7 @@ if __name__ == "__main__":
 								f.write("target_orn: [0.0, 0.0, 0.0]\n\n")
 
 								f.write("is_discrete: false\n")
-								f.write("additional_states_dim: 33\n\n")
+								f.write("additional_states_dim: 7\n\n")
 
 								f.write("reward_type: l2\n")
 								f.write("success_reward: {}\n".format(suc_rwd))
