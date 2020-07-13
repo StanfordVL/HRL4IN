@@ -1,13 +1,13 @@
 
 if __name__ == "__main__":
 	gpu="0"
-	pos="fix_1.2"
+	pos="fix_add_1.2"
 	gamma=0.99 
-	num_steps="80"
+	num_steps="60"
 
 	for lr in ["1e-4"]:
 		for tol in [0.05,0.2]:
-			for wheel_vel in [0.125]:
+			for wheel_vel in [0.25]:
 				for arm_vel in [0.25]:
 					for suc_rwd in [10.0]:
 						for pot_rwd in [30.0]:
@@ -34,7 +34,7 @@ if __name__ == "__main__":
 								f.write("target_orn: [0.0, 0.0, 0.0]\n\n")
 
 								f.write("is_discrete: false\n")
-								f.write("additional_states_dim: 7\n\n")
+								f.write("additional_states_dim: 33\n\n")
 
 								f.write("reward_type: l2\n")
 								f.write("success_reward: {}\n".format(suc_rwd))
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 								f.write("dist_tol: {}\n".format(tol))
 								f.write("max_step: {}\n\n".format(num_steps))
 
-								f.write("output: [sensor, rgb, depth]\n")
+								f.write("output: [sensor]\n")
 								f.write("resolution: 128\n")
 								f.write("fov: 1.57\n\n")
 
