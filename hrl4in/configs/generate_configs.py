@@ -1,7 +1,7 @@
 
 if __name__ == "__main__":
 	gpu="0"
-	pos="fix_0.5"
+	pos="fix_1.2"
 	gamma=0.99 
 	num_steps="80"
 
@@ -9,7 +9,7 @@ if __name__ == "__main__":
 		for tol in [0.05,0.2]:
 			for wheel_vel in [0.125]:
 				for arm_vel in [0.25]:
-					for suc_rwd in [100.0]:
+					for suc_rwd in [10.0]:
 						for pot_rwd in [30.0]:
 							for col_rwd in [0.0]:
 
@@ -30,7 +30,7 @@ if __name__ == "__main__":
 								f.write("initial_pos: [-1.0, -1.0, 0.0]\n")
 								f.write("initial_orn: [0.0, 0.0, 0.0]\n\n")
 
-								f.write("target_pos: [1.0, 1.0, 0.5]\n")
+								f.write("target_pos: [1.0, 1.0, 1.2]\n")
 								f.write("target_orn: [0.0, 0.0, 0.0]\n\n")
 
 								f.write("is_discrete: false\n")
