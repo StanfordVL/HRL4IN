@@ -15,7 +15,7 @@
 #echo $log_dir
 
 gpu="0"
-pos="fix_1.2"
+pos="rdh_s_1.2"
 reward_type="l2"
 tol=0.05
 success_reward=10.0
@@ -52,6 +52,7 @@ python -u train_ppo.py \
    --config-file $log_dir".yaml" \
    --arena "stadium" \
    --num-eval-episodes 100 \
-   --env-mode "gui" \
+   --env-mode "pbgui" \
    --eval-only \
-   --gamma $gamma 
+   --gamma $gamma \
+   --random-height
