@@ -1,9 +1,9 @@
 
 if __name__ == "__main__":
 	gpu="0"
-	pos="rdh_sa_1.2"
+	pos="rdhp_sa_1.2"
 	gamma=0.99 
-	num_steps="70"
+	num_steps="140"
 
 	for lr in ["1e-4"]:
 		for tol in [0.05,0.2]:
