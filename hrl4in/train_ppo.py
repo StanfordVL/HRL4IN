@@ -222,7 +222,7 @@ def main():
         if args.env_type == "gibson":
             if args.random_height:
                 print("RANDOM")
-                return NavigateRandomHeightEnv(config_file=config_file,
+                return NavigateRandomEnv(config_file=config_file,
                                          mode=env_mode,
                                          action_timestep=args.action_timestep,
                                          physics_timestep=args.physics_timestep,
