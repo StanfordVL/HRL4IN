@@ -1,7 +1,7 @@
 #!/bin/bash
 
 gpu="0"
-pos="rdhap_sa_1.2"
+pos="fix_cam_1.2"
 reward_type="l2"
 tol=0.05
 success_reward=10.0
@@ -9,7 +9,7 @@ potential_reward=30.0
 col_reward=-0.1
 gamma=0.99 
 lr="1e-4"
-num_steps="140"
+num_steps="70"
 speed="0.25_0.25"
 
 log_dir="pos_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_col_rwd_"$col_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
@@ -26,7 +26,7 @@ python -u train_ppo.py \
    --num-eval-processes 1 \
    --num-steps $num_steps \
    --num-mini-batch 1 \
-   --num-updates 200000 \
+   --num-updates 500000 \
    --use-linear-lr-decay \
    --use-linear-clip-decay \
    --entropy-coef 0.01 \
@@ -39,5 +39,4 @@ python -u train_ppo.py \
    --arena "stadium" \
    --num-eval-episodes 1 \
    --env-mode "headless" \
-   --gamma $gamma \
-   --random-height
+   --gamma $gamma 
