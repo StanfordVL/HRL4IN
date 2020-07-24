@@ -1,17 +1,17 @@
 
 if __name__ == "__main__":
 	gpu="0"
-	pos="rdhp_sa_1.2"
+	pos="rdh_cam"
 	gamma=0.99 
-	num_steps="140"
+	num_steps="70"
 
 	for lr in ["1e-4"]:
-		for tol in [0.05,0.2]:
+		for tol in [0.05]:
 			for wheel_vel in [0.25]:
 				for arm_vel in [0.25]:
 					for suc_rwd in [10.0]:
 						for pot_rwd in [30.0]:
-							for col_rwd in [0.0]:
+							for col_rwd in [-0.1]:
 
 								file_name = "pos_{}_tol_{}_suc_rwd_{}_pot_rwd_{}_col_rwd_{}_gma_{}_lr_{}_nstps_{}_spd_{}_{}.yaml".format(pos,tol,suc_rwd,pot_rwd,col_rwd,gamma,lr,num_steps,wheel_vel,arm_vel)
 								
@@ -27,14 +27,14 @@ if __name__ == "__main__":
 								f.write("task: reaching\n")
 								f.write("fisheye: false\n\n")
 
-								f.write("initial_pos: [-1.0, -1.0, 0.0]\n")
+								f.write("initial_pos: [0.0, 0.0, 0.0]\n")
 								f.write("initial_orn: [0.0, 0.0, 0.0]\n\n")
 
-								f.write("target_pos: [1.0, 1.0, 1.2]\n")
+								f.write("target_pos: [2.0, 2.0, 1.2]\n")
 								f.write("target_orn: [0.0, 0.0, 0.0]\n\n")
 
 								f.write("is_discrete: false\n")
-								f.write("additional_states_dim: 9\n\n")
+								f.write("additional_states_dim: 20\n\n")
 
 								f.write("reward_type: l2\n")
 								f.write("success_reward: {}\n".format(suc_rwd))

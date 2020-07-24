@@ -7,10 +7,10 @@ arm_velocity: 0.25
 task: reaching
 fisheye: false
 
-initial_pos: [-1.0, -1.0, 0.0]
+initial_pos: [0.0, 0.0, 0.0]
 initial_orn: [0.0, 0.0, 0.0]
 
-target_pos: [1.0, 1.0, 1.2]
+target_pos: [2.0, 2.0, 1.2]
 target_orn: [0.0, 0.0, 0.0]
 
 is_discrete: false
@@ -26,11 +26,11 @@ collision_ignore_link_a_ids: [2, 3, 5, 7]
 discount_factor: 0.99
 
 dist_tol: 0.05
-max_step: 80
+max_step: 70
 
-output: [sensor]
-resolution: 128
-fov: 1.57
+output: [sensor, rgb]
+resolution: 256
+fov: 2
 
 use_filler: true
 display_ui: false
