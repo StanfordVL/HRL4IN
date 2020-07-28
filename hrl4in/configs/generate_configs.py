@@ -2,9 +2,9 @@
 if __name__ == "__main__":
 	gpu="0"
 	gamma=0.99 
-	num_steps="70"
+	num_steps="90"
 
-	for pos in ["fix_d", "rdh_d"]:
+	for pos in ["fix_rds", "rdh_rds", "fix_ds", "rdh_ds", "fix_s", "rdh_s"]:
 		for lr in ["1e-4"]:
 			for tol in [0.05]:
 				for wheel_vel in [0.25]:
