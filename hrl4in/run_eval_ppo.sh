@@ -1,19 +1,5 @@
 #!/bin/bash
 
-#gpu="0"
-#pos="rh"
-#reward_type="l2"
-#tol=0.1
-#success_reward=100.0
-#potential_reward=1.0
-#gamma=0.99 
-#lr="1e-4"
-#num_steps="500"
-#speed="0.075_0.4"
-
-#log_dir="pos_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
-#echo $log_dir
-
 gpu="0"
 pos="fix_cam_1.2"
 reward_type="l2"
@@ -54,4 +40,5 @@ python -u train_ppo.py \
    --num-eval-episodes 100 \
    --env-mode "gui" \
    --eval-only \
-   --gamma $gamma 
+   --gamma $gamma \
+   --random-height

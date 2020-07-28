@@ -1,0 +1,66 @@
+# scene
+scene: stadium
+is_interactive: true
+build_graph: true
+load_texture: true
+trav_map_resolution: 0.1
+trav_map_erosion: 3
+
+# robot
+robot: JR2_Kinova
+is_discrete: false
+wheel_velocity: 0.03
+arm_velocity: 0.5
+
+# task, observation and action
+task: reaching # pointgoal|objectgoal|areagoal|reaching
+random_height: true
+target_dist_min: 1.0
+target_dist_max: 10.0
+initial_pos_z_offset: 0.1
+additional_states_dim: 7
+
+initial_pos: [0, 4, 0]
+initial_orn: [0.0, 0.0, 0.0]
+
+target_pos: [2, 0, 1]
+target_orn: [0.0, 0.0, 0.0]
+
+# reward
+reward_type: l2
+success_reward: 10.0
+slack_reward: -0.01
+potential_reward_weight: 1.0
+collision_reward_weight: -0.1
+collision_ignore_link_a_ids: [2, 3, 5, 7]  # ignore collisions with these robot links
+
+# discount factor
+discount_factor: 0.99
+
+# termination condition
+dist_tol: 0.5  # body width
+max_step: 500
+max_collisions_allowed: 500
+goal_format: polar
+
+# sensor spec
+output: [sensor, rgb, depth]
+# image
+# Intel Realsense Depth Camera D435
+# https://store.intelrealsense.com/buy-intel-realsense-depth-camera-d435.html
+fisheye: false
+image_width: 640
+image_height: 480
+vertical_fov: 100
+# depth
+depth_low : 0.1
+depth_high: 10.0
+
+# sensor noise
+depth_noise_rate: 0.0
+
+# visual objects
+visual_object_at_initial_target_pos: true
+target_visual_object_visible_to_agent: true
+
+

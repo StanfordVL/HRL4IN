@@ -221,12 +221,21 @@ def main():
     def load_env(env_mode, device_idx):
         if args.env_type == "gibson":
             if args.random_height:
-                print("RANDOM")
+                print("RANDOM HEIGHT")
                 return NavigateRandomHeightEnv(config_file=config_file,
                                          mode=env_mode,
                                          action_timestep=args.action_timestep,
                                          physics_timestep=args.physics_timestep,
-                                         random_height=args.random_height,
+                                         random_height=True,
+                                         automatic_reset=True,
+                                         device_idx=device_idx)
+            elif args.random_position:
+                print("RANDOM POS")
+                return NavigateRandomEnv(config_file=config_file,
+                                         mode=env_mode,
+                                         action_timestep=args.action_timestep,
+                                         physics_timestep=args.physics_timestep,
+                                         random_height=True,
                                          automatic_reset=True,
                                          device_idx=device_idx)
             else:
