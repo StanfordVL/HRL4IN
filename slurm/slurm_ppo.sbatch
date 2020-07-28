@@ -17,7 +17,7 @@
 #################
 #time you think you need; default is 2 hours
 #format could be dd-hh:mm:ss, hh:mm:ss, mm:ss, or mm
-#SBATCH --time=96:00:00
+#SBATCH --time=168:00:00
 #################
 # Quality of Service (QOS); think of it as sending your job into a special queue; --qos=long for with a max job length of 7 days.
 # uncomment ##SBATCH --qos=long if you want your job to run longer than 48 hours, which is the default for normal partition,  
@@ -53,7 +53,6 @@ source activate ../envs/py3-igibson
 export OPENAI_LOG_FORMAT='stdout,log,csv,tensorboard'
 
 cd /cvgl2/u/yveys/iGibson
-git pull
 
 cd /cvgl2/u/yveys/MMLearning
 

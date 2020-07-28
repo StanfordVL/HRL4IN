@@ -26,18 +26,17 @@ python -u train_ppo.py \
    --num-eval-processes 1 \
    --num-steps $num_steps \
    --num-mini-batch 1 \
-   --num-updates 500000 \
+   --num-updates 1000000 \
    --use-linear-lr-decay \
    --use-linear-clip-decay \
    --entropy-coef 0.01 \
    --log-interval 1 \
    --experiment-folder "ckpt/"$log_dir \
-   --checkpoint-interval 100 \
+   --checkpoint-interval 200 \
    --checkpoint-index -1 \
    --env-type "gibson" \
    --config-file $log_dir".yaml" \
    --arena "stadium" \
    --num-eval-episodes 1 \
    --env-mode "headless" \
-   --gamma $gamma \
-   --random-height
+   --gamma $gamma 

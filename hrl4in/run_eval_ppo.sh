@@ -26,7 +26,7 @@ python -u train_ppo.py \
    --num-eval-processes 1 \
    --num-steps $num_steps \
    --num-mini-batch 1 \
-   --num-updates 100000 \
+   --num-updates 1000000 \
    --use-linear-lr-decay \
    --use-linear-clip-decay \
    --entropy-coef 0.01 \
