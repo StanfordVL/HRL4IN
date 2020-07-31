@@ -3,7 +3,7 @@
 gpu="0"
 pos="fix_1.0_ds"
 reward_type="l2"
-tol=0.1
+tol=0.05
 success_reward=10.0
 potential_reward=30.0
 col_reward=-0.1
@@ -40,4 +40,5 @@ python -u train_ppo.py \
    --num-eval-episodes 100 \
    --env-mode "gui" \
    --eval-only \
-   --gamma $gamma 
+   --gamma $gamma \
+   --random-height
