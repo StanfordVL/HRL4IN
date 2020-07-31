@@ -1,7 +1,7 @@
 #!/bin/bash
 
 gpu="0"
-pos="fix_1.0_ds"
+pos="rdp_ds"
 reward_type="l2"
 tol=0.1
 success_reward=10.0
@@ -9,7 +9,7 @@ potential_reward=30.0
 col_reward=-0.1
 gamma=0.99 
 lr="1e-4"
-num_steps="90"
+num_steps="120"
 speed="0.25_0.25"
 
 log_dir="pos_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_col_rwd_"$col_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
@@ -39,4 +39,5 @@ python -u train_ppo.py \
    --arena "stadium" \
    --num-eval-episodes 1 \
    --env-mode "headless" \
-   --gamma $gamma 
+   --gamma $gamma \
+   --random-pos

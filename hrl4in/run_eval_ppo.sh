@@ -41,4 +41,4 @@ python -u train_ppo.py \
    --env-mode "gui" \
    --eval-only \
    --gamma $gamma \
-   --random-height
+   --random-pos
