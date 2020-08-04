@@ -98,6 +98,8 @@ class Net(nn.Module):
         self.train()
 
     def _init_perception_model(self, observation_space):
+        print("OBSERVATION SPACE")
+        print(observation_space.spaces)
         if "rgb" in observation_space.spaces:
             self._n_input_rgb = observation_space.spaces["rgb"].shape[2]
         else:
@@ -107,6 +109,11 @@ class Net(nn.Module):
             self._n_input_depth = observation_space.spaces["depth"].shape[2]
         else:
             self._n_input_depth = 0
+
+        if "seg" in observation_space.spaces:
+            self._n_input_seg = observation_space.spaces["seg"].shape[2]
+        else:
+            self._n_input_seg = 0
 
         if "global_map" in observation_space.spaces:
             self._n_input_global_map = observation_space.spaces["global_map"].shape[0]
@@ -122,6 +129,8 @@ class Net(nn.Module):
             cnn_dims = np.array(observation_space.spaces["rgb"].shape[:2], dtype=np.float32)
         elif self._n_input_depth > 0:
             cnn_dims = np.array(observation_space.spaces["depth"].shape[:2], dtype=np.float32)
+        elif self._n_input_seg > 0:
+            cnn_dims = np.array(observation_space.spaces["seg"].shape[:2], dtype=np.float32)
         elif self._n_input_global_map > 0:
             cnn_dims = np.array(observation_space.spaces["global_map"].shape[1:3], dtype=np.float32)
         elif self._n_input_local_map > 0:
@@ -143,7 +152,7 @@ class Net(nn.Module):
             prev_out_channels = None
             for i, (out_channels, kernel_size, stride, padding) in enumerate(self._cnn_layers_params):
                 if i == 0:
-                    in_channels = self._n_input_rgb + self._n_input_depth + \
+                    in_channels = self._n_input_rgb + self._n_input_depth + self._n_input_seg + \
                                   self._n_input_global_map + self._n_input_local_map
                 else:
                     in_channels = prev_out_channels
@@ -257,7 +266,7 @@ class Net(nn.Module):
 
     @property
     def is_blind(self):
-        return self._n_input_rgb + self._n_input_depth + self._n_input_global_map + self._n_input_local_map == 0
+        return self._n_input_rgb + self._n_input_depth + self._n_input_seg + self._n_input_global_map + self._n_input_local_map == 0
 
     def forward_perception_model(self, observations):
         cnn_input = []
@@ -273,6 +282,12 @@ class Net(nn.Module):
             # permute tensor to dimension [BATCH x CHANNEL x HEIGHT X WIDTH]
             depth_observations = depth_observations.permute(0, 3, 1, 2)
             cnn_input.append(depth_observations)
+
+        if self._n_input_seg > 0:
+            seg_observations = observations["seg"]
+            # permute tensor to dimension [BATCH x CHANNEL x HEIGHT X WIDTH]
+            seg_observations = seg_observations.permute(0, 3, 1, 2)
+            cnn_input.append(seg_observations)
 
         if self._n_input_global_map > 0:
             global_map_observations = observations["global_map"]

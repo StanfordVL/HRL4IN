@@ -1,7 +1,7 @@
 #!/bin/bash
 
 gpu="0"
-pos="fix_1.0_ds"
+pos="fix_1.0_rds"
 reward_type="l2"
 tol=0.05
 success_reward=10.0
@@ -40,5 +40,4 @@ python -u train_ppo.py \
    --num-eval-episodes 100 \
    --env-mode "gui" \
    --eval-only \
-   --gamma $gamma \
-   --random-pos
+   --gamma $gamma 
