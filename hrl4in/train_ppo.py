@@ -198,8 +198,8 @@ def main():
 
     random.seed(args.seed)
     np.random.seed(args.seed)
-    #device = torch.device("cuda:{}".format(args.pth_gpu_id))
-    device = torch.device("cpu")
+    device = torch.device("cuda:{}".format(args.pth_gpu_id))
+    #device = torch.device("cpu")
     logger.add_filehandler(log_file)
 
     if not args.eval_only:

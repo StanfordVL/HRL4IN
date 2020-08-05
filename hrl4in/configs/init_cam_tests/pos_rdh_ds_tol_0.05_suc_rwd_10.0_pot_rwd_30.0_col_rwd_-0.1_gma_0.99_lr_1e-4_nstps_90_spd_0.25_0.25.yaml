@@ -10,7 +10,7 @@ fisheye: false
 initial_pos: [0.0, 0.0, 0.0]
 initial_orn: [0.0, 0.0, 0.0]
 
-target_pos: [2.0, 2.0, 1.2]
+target_pos: [2.0, 0.0, 1.0]
 target_orn: [0.0, 0.0, 0.0]
 
 is_discrete: false
@@ -29,8 +29,8 @@ dist_tol: 0.05
 max_step: 90
 
 output: [sensor, depth, seg]
-resolution: 128
-fov: 1.57
+resolution: 256
+fov: 2
 
 use_filler: true
 display_ui: false
