@@ -13,6 +13,7 @@ num_steps="120"
 speed="0.25_0.25"
 
 log_dir="pos_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_col_rwd_"$col_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
+log_dir="jr2_focus"
 echo $log_dir
 
 python -u train_ppo.py \
@@ -32,7 +33,7 @@ python -u train_ppo.py \
    --entropy-coef 0.01 \
    --log-interval 1 \
    --experiment-folder "ckpt/"$log_dir \
-   --checkpoint-interval 200 \
+   --checkpoint-interval 10 \
    --checkpoint-index -1 \
    --env-type "gibson" \
    --config-file $log_dir".yaml" \

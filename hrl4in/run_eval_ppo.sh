@@ -13,6 +13,7 @@ num_steps="90"
 speed="0.25_0.25"
 
 log_dir="pos_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_col_rwd_"$col_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
+log_dir="jr2_focus"
 echo $log_dir
 
 python -u train_ppo.py \
@@ -38,6 +39,6 @@ python -u train_ppo.py \
    --config-file $log_dir".yaml" \
    --arena "stadium" \
    --num-eval-episodes 100 \
-   --env-mode "gui" \
+   --env-mode "iggui" \
    --eval-only \
    --gamma $gamma 
