@@ -1,7 +1,7 @@
 #!/bin/bash
 
 gpu="0"
-pos="fix_1.0_ds"
+pos="fix_1.0_rds"
 reward_type="l2"
 tol=0.05
 success_reward=10.0
@@ -32,11 +32,11 @@ python -u train_ppo.py \
    --entropy-coef 0.01 \
    --log-interval 1 \
    --experiment-folder "ckpt/"$log_dir \
-   --checkpoint-interval 10 \
+   --checkpoint-interval 200 \
    --checkpoint-index -1 \
    --env-type "gibson" \
    --config-file $log_dir".yaml" \
    --arena "stadium" \
    --num-eval-episodes 1 \
-   --env-mode "headless" \
+   --env-mode "iggui" \
    --gamma $gamma 

@@ -32,7 +32,7 @@ python -u train_ppo.py \
    --entropy-coef 0.01 \
    --log-interval 1 \
    --experiment-folder "ckpt/"$log_dir \
-   --checkpoint-interval 10 \
+   --checkpoint-interval 200 \
    --checkpoint-index -1 \
    --env-type "gibson" \
    --config-file $log_dir".yaml" \
@@ -40,5 +40,4 @@ python -u train_ppo.py \
    --num-eval-episodes 100 \
    --env-mode "headless" \
    --eval-only \
-   --gamma $gamma \
-   --random-height
+   --gamma $gamma 
