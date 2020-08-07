@@ -294,7 +294,7 @@ def main():
     if ckpt_path is not None:
         ckpt = torch.load(ckpt_path, map_location=device)
         agent.load_state_dict(ckpt["state_dict"])
-        logger.info("loaded checkpoing: {}".format(ckpt_path))
+        logger.info("loaded checkpoint: {}".format(ckpt_path))
 
     logger.info(
         "agent number of parameters: {}".format(
