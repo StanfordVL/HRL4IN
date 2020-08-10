@@ -21,6 +21,7 @@ success_reward: 10.0
 slack_reward: -0.01
 potential_reward_weight: 30.0
 collision_reward_weight: -0.1
+focus_reward_weight: 1.0
 collision_ignore_link_a_ids: [2, 3, 5, 7]
 
 discount_factor: 0.99

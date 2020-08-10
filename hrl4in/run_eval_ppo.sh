@@ -1,7 +1,7 @@
 #!/bin/bash
 
 gpu="0"
-pos="fix_1.0_ds"
+pos="fix_1.0_rds_cam"
 reward_type="l2"
 tol=0.05
 success_reward=10.0
@@ -38,6 +38,6 @@ python -u train_ppo.py \
    --config-file $log_dir".yaml" \
    --arena "stadium" \
    --num-eval-episodes 100 \
-   --env-mode "headless" \
+   --env-mode "gui" \
    --eval-only \
    --gamma $gamma 
