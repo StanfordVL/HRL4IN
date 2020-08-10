@@ -1,7 +1,7 @@
 #!/bin/bash
 
 gpu="0"
-pos="fix_1.0_rds"
+pos="fix_1.0_ds"
 reward_type="l2"
 tol=0.05
 success_reward=10.0
