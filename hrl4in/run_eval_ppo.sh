@@ -40,4 +40,5 @@ python -u train_ppo.py \
    --num-eval-episodes 100 \
    --env-mode "gui" \
    --eval-only \
-   --gamma $gamma 
+   --gamma $gamma \
+   --random-height

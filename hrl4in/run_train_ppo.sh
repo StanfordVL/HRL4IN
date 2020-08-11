@@ -1,7 +1,7 @@
 #!/bin/bash
 
 gpu="0"
-pos="fix_1.0_r_cam_rew"
+pos="rdh_rds_cam"
 reward_type="l2"
 tol=0.05
 success_reward=10.0
@@ -39,4 +39,5 @@ python -u train_ppo.py \
    --arena "stadium" \
    --num-eval-episodes 1 \
    --env-mode "headless" \
-   --gamma $gamma 
+   --gamma $gamma \
+   --random-height
