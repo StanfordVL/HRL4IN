@@ -35,6 +35,11 @@ class Net(nn.Module):
         else:
             self._n_non_vis_sensor = 0
 
+        if "sensor_wo_goal" in observation_space.spaces:
+            self._n_non_vis_sensor_wo_goal = observation_space.spaces["sensor_wo_goal"].shape[0]
+        else:
+            self._n_non_vis_sensor_wo_goal = 0
+
         if "auxiliary_sensor" in observation_space.spaces:
             self._n_auxiliary_sensor = observation_space.spaces["auxiliary_sensor"].shape[0]
         else:
@@ -61,7 +66,8 @@ class Net(nn.Module):
             self._n_action_mask = 0
 
         self._n_additional_rnn_input = (
-                self._n_non_vis_sensor +
+                self._n_non_vis_sensor + 
+                self._n_non_vis_sensor_wo_goal +
                 self._n_auxiliary_sensor +
                 self._n_subgoal +
                 self._n_subgoal_mask +
@@ -306,6 +312,8 @@ class Net(nn.Module):
             additional_rnn_input = []
             if self._n_non_vis_sensor > 0:
                 additional_rnn_input.append(observations["sensor"])
+            if self._n_non_vis_sensor_wo_goal > 0:
+                additional_rnn_input.append(observations["sensor_wo_goal"])
             if self._n_auxiliary_sensor > 0:
                 additional_rnn_input.append(observations["auxiliary_sensor"])
             if self._n_scan > 0:
