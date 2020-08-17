@@ -27,35 +27,6 @@ class Policy(nn.Module):
                  stddev_anneal_schedule=None,
                  stddev_transform=torch.nn.functional.softplus):
         super().__init__()
-
-        actor_observation_space = OrderedDict()
-        critic_observation_space = OrderedDict()
-
-        actor_observation_space['sensor_wo_goal'] = observation_space['sensor_wo_goal']
-        critic_observation_space['sensor'] = observation_space['sensor']
-        actor_observation_space['rgb'] = observation_space['rgb']
-        critic_observation_space['rgb'] = observation_space['rgb']
-        actor_observation_space['depth'] = observation_space['depth']
-        critic_observation_space['depth'] = observation_space['depth']
-        actor_observation_space['seg'] = observation_space['seg']
-        critic_observation_space['seg'] = observation_space['seg']
-
-        actor_observation_space = gym.spaces.Dict(actor_observation_space)
-        critic_observation_space = gym.spaces.Dict(critic_observation_space)
-
-        print(actor_observation_space)
-        print(critic_observation_space)
-
-        self.actor_net = Net(
-            observation_space=actor_observation_space,
-            hidden_size=hidden_size,
-            cnn_layers_params=cnn_layers_params,
-        )
-        self.critic_net = Net(
-            observation_space=critic_observation_space,
-            hidden_size=hidden_size,
-            cnn_layers_params=cnn_layers_params,
-        )
         self.net = Net(
             observation_space=observation_space,
             hidden_size=hidden_size,
@@ -93,8 +64,7 @@ class Policy(nn.Module):
         return np.exp(log_stddev)
 
     def act(self, observations, rnn_hidden_states, masks, deterministic=False, update=None):
-        observations.pop('sensor')
-        value, actor_features, rnn_hidden_states = self.actor_net(observations, rnn_hidden_states, masks)
+        value, actor_features, rnn_hidden_states = self.net(observations, rnn_hidden_states, masks)
 
         if self.stddev_anneal_schedule is not None:
             stddev = self.get_current_stddev(update)
@@ -111,13 +81,11 @@ class Policy(nn.Module):
         return value, action, action_log_probs, rnn_hidden_states
 
     def get_value(self, observations, rnn_hidden_states, masks):
-        observations.pop('sensor_wo_goal')
-        value, _, _ = self.critic_net(observations, rnn_hidden_states, masks)
+        value, _, _ = self.net(observations, rnn_hidden_states, masks)
         return value
 
     def evaluate_actions(self, observations, rnn_hidden_states, masks, action, update=None):
-        observations.pop('sensor_wo_goal')
-        value, actor_features, rnn_hidden_states = self.critic_net(
+        value, actor_features, rnn_hidden_states = self.net(
             observations, rnn_hidden_states, masks
         )
         if self.stddev_anneal_schedule is not None:

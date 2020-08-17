@@ -35,11 +35,6 @@ class Net(nn.Module):
         else:
             self._n_non_vis_sensor = 0
 
-        if "sensor_wo_goal" in observation_space.spaces:
-            self._n_non_vis_sensor_wo_goal = observation_space.spaces["sensor_wo_goal"].shape[0]
-        else:
-            self._n_non_vis_sensor_wo_goal = 0
-
         if "auxiliary_sensor" in observation_space.spaces:
             self._n_auxiliary_sensor = observation_space.spaces["auxiliary_sensor"].shape[0]
         else:
@@ -67,7 +62,6 @@ class Net(nn.Module):
 
         self._n_additional_rnn_input = (
                 self._n_non_vis_sensor + 
-                self._n_non_vis_sensor_wo_goal +
                 self._n_auxiliary_sensor +
                 self._n_subgoal +
                 self._n_subgoal_mask +
@@ -75,6 +69,7 @@ class Net(nn.Module):
                 self._n_scan
         )
         self._hidden_size = hidden_size
+        self._goal_hidden_size = 128
         self._single_branch_size = single_branch_size
 
         if self._n_additional_rnn_input != 0:
@@ -98,7 +93,9 @@ class Net(nn.Module):
         assert self._rnn_input_size != 0, "the network has no input"
 
         self.rnn = nn.GRU(self._rnn_input_size, self._hidden_size)
-        self.critic_linear = nn.Linear(self._hidden_size, 1)
+        
+        self.critic_linear = nn.Linear(self._hidden_size + self._goal_hidden_size, 1)
+        self.goal_linear = nn.Linear(3, self._goal_hidden_size)
 
         self.layer_init()
         self.train()
@@ -312,8 +309,6 @@ class Net(nn.Module):
             additional_rnn_input = []
             if self._n_non_vis_sensor > 0:
                 additional_rnn_input.append(observations["sensor"])
-            if self._n_non_vis_sensor_wo_goal > 0:
-                additional_rnn_input.append(observations["sensor_wo_goal"])
             if self._n_auxiliary_sensor > 0:
                 additional_rnn_input.append(observations["auxiliary_sensor"])
             if self._n_scan > 0:
@@ -336,4 +331,6 @@ class Net(nn.Module):
 
         x, rnn_hidden_states = self.forward_rnn(x, rnn_hidden_states, masks)
 
-        return self.critic_linear(x), x, rnn_hidden_states
+        goal_embedding = self.goal_linear(observations['goal'])
+
+        return self.critic_linear(torch.cat((x, goal_embedding), dim=1)), x, rnn_hidden_states
