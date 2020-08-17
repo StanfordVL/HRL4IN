@@ -29,7 +29,7 @@ discount_factor: 0.99
 dist_tol: 0.05
 max_step: 90
 
-output: [sensor, goal, rgb, depth, seg]
+output: [sensor, goal, rgb]
 resolution: 256
 fov: 2
 
