@@ -33,9 +33,18 @@ class Policy(nn.Module):
 
         actor_observation_space['sensor_wo_goal'] = observation_space['sensor_wo_goal']
         critic_observation_space['sensor'] = observation_space['sensor']
+        actor_observation_space['rgb'] = observation_space['rgb']
+        critic_observation_space['rgb'] = observation_space['rgb']
+        actor_observation_space['depth'] = observation_space['depth']
+        critic_observation_space['depth'] = observation_space['depth']
+        actor_observation_space['seg'] = observation_space['seg']
+        critic_observation_space['seg'] = observation_space['seg']
 
         actor_observation_space = gym.spaces.Dict(actor_observation_space)
         critic_observation_space = gym.spaces.Dict(critic_observation_space)
+
+        print(actor_observation_space)
+        print(critic_observation_space)
 
         self.actor_net = Net(
             observation_space=actor_observation_space,
