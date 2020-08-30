@@ -13,7 +13,7 @@ num_steps="90"
 speed="0.25_0.25"
 
 log_dir="pos_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_col_rwd_"$col_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
-log_dir="jr2_obs_10_500"
+log_dir="jr2_10.0_1.0_500"
 echo $log_dir
 
 python -u train_ppo.py \
