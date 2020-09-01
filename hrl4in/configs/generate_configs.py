@@ -2,25 +2,25 @@
 if __name__ == "__main__":
 	gpu="0"
 	gamma=0.99 
-	num_steps="90"
+	num_steps="250"
 
-	for pos in ["fix_rds", "rdh_rds", "fix_ds", "rdh_ds", "fix_s", "rdh_s"]:
+	for pos in ["wrist"]:
 		for lr in ["1e-4"]:
-			for tol in [0.05]:
-				for wheel_vel in [0.25]:
-					for arm_vel in [0.25]:
+			for tol in [0.06]:
+				for wheel_vel in [0.2]:
+					for arm_vel in [0.1]:
 						for suc_rwd in [10.0]:
-							for pot_rwd in [30.0]:
-								for col_rwd in [-0.1]:
+							for pot_rwd in [5.0]:
+								for col_rwd in [-10.0]:
 
-									file_name = "pos_{}_tol_{}_suc_rwd_{}_pot_rwd_{}_col_rwd_{}_gma_{}_lr_{}_nstps_{}_spd_{}_{}.yaml".format(pos,tol,suc_rwd,pot_rwd,col_rwd,gamma,lr,num_steps,wheel_vel,arm_vel)
+									file_name = "jr2_{}_tol_{}_suc_rwd_{}_pot_rwd_{}_col_rwd_{}_gma_{}_lr_{}_nstps_{}_spd_{}_{}.yaml".format(pos,tol,suc_rwd,pot_rwd,col_rwd,gamma,lr,num_steps,wheel_vel,arm_vel)
 									
 									f = open(file_name, 'w').close()
 									f = open(file_name, 'w')
 									
 									f.write("scene: stadium\n\n")
 
-									f.write("robot: JR2_Kinova\n")
+									f.write("robot: JR2_Kinova_Wrist\n")
 									f.write("wheel_velocity: {}\n".format(wheel_vel))
 									f.write("arm_velocity: {}\n\n".format(arm_vel))
 
@@ -34,22 +34,25 @@ if __name__ == "__main__":
 									f.write("target_orn: [0.0, 0.0, 0.0]\n\n")
 
 									f.write("is_discrete: false\n")
-									f.write("additional_states_dim: 20\n\n")
+									f.write("additional_states_dim: 20\n")
+									f.write("goal_dim: 3\n\n")
 
 									f.write("reward_type: l2\n")
 									f.write("success_reward: {}\n".format(suc_rwd))
 									f.write("slack_reward: -0.01\n")
 									f.write("potential_reward_weight: {}\n".format(pot_rwd))
 									f.write("collision_reward_weight: {}\n".format(col_rwd))
-									f.write("collision_ignore_link_a_ids: [2, 3, 5, 7]\n\n")
+									f.write("collision_ignore_link_a_ids: []\n")
+									f.write("collision_ignore_body_b_ids: [1,3]\n")
+									f.write("max_collisions_allowed: 0\n\n")
 
 									f.write("discount_factor: {}\n\n".format(gamma))
 
 									f.write("dist_tol: {}\n".format(tol))
 									f.write("max_step: {}\n\n".format(num_steps))
 
-									f.write("output: [sensor]\n")
-									f.write("resolution: 128\n")
+									f.write("output: [sensor, goal, depth, rgb, seg]\n")
+									f.write("resolution: 256\n")
 									f.write("fov: 1.57\n\n")
 
 									f.write("use_filler: true\n")
