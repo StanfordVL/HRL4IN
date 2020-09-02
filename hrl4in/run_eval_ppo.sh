@@ -1,19 +1,18 @@
 #!/bin/bash
 
 gpu="0"
-pos="fix_1.0_rds_cam"
+pos="wrist"
 reward_type="l2"
-tol=0.05
+tol=0.06
 success_reward=10.0
-potential_reward=30.0
-col_reward=-0.1
+potential_reward=5.0
+col_reward=-10.0
 gamma=0.99 
 lr="1e-4"
-num_steps="90"
-speed="0.25_0.25"
+num_steps="250"
+speed="0.1_0.05"
 
-log_dir="pos_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_col_rwd_"$col_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
-log_dir="jr_10.0_500"
+log_dir="jr2_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_col_rwd_"$col_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
 echo $log_dir
 
 python -u train_ppo.py \
