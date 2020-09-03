@@ -1,7 +1,7 @@
 #!/bin/bash
 
 gpu="0"
-pos="wrist_short_mov"
+pos="wrist_slow_mov"
 reward_type="l2"
 tol=0.06
 success_reward=10.0
