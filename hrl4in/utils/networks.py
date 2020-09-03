@@ -69,7 +69,7 @@ class Net(nn.Module):
                 self._n_scan
         )
         self._hidden_size = hidden_size
-        self._goal_hidden_size = 128
+        self._goal_hidden_size = 0
         self._single_branch_size = single_branch_size
 
         if self._n_additional_rnn_input != 0:
@@ -95,7 +95,7 @@ class Net(nn.Module):
         self.rnn = nn.GRU(self._rnn_input_size, self._hidden_size)
         
         self.critic_linear = nn.Linear(self._hidden_size + self._goal_hidden_size, 1)
-        self.goal_linear = nn.Linear(3, self._goal_hidden_size)
+        #self.goal_linear = nn.Linear(3, self._goal_hidden_size)
 
         self.layer_init()
         self.train()
@@ -331,6 +331,7 @@ class Net(nn.Module):
 
         x, rnn_hidden_states = self.forward_rnn(x, rnn_hidden_states, masks)
 
-        goal_embedding = self.goal_linear(observations['goal'])
+        #goal_embedding = self.goal_linear(observations['goal'])
 
-        return self.critic_linear(torch.cat((x, goal_embedding), dim=1)), x, rnn_hidden_states
+        #return self.critic_linear(torch.cat((x, goal_embedding), dim=1)), x, rnn_hidden_states
+        return self.critic_linear(x), x, rnn_hidden_states
