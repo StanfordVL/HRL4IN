@@ -1,8 +1,8 @@
 scene: stadium
 
 robot: JR2_Kinova_Wrist
-wheel_velocity: 0.2
-arm_velocity: 0.05
+wheel_velocity: 0.1
+arm_velocity: 0.2
 
 task: reaching
 fisheye: false
@@ -17,7 +17,7 @@ is_discrete: false
 additional_states_dim: 23
 
 reward_type: l2
-success_reward: 10.0
+success_reward: 30.0
 slack_reward: -0.01
 potential_reward_weight: 5.0
 collision_reward_weight: -10.0
@@ -28,7 +28,7 @@ max_collisions_allowed: 0
 discount_factor: 0.99
 
 dist_tol: 0.06
-max_step: 250
+max_step: 300
 
 output: [sensor, depth, rgb, seg]
 resolution: 256
