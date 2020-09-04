@@ -1,7 +1,7 @@
 #!/bin/bash
 
 gpu="0"
-pos="wrist_far_mov"
+pos="fov_90_mov"
 reward_type="l2"
 tol=0.06
 success_reward=30.0

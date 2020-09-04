@@ -33,6 +33,7 @@ max_step: 300
 output: [sensor, depth, rgb, seg]
 resolution: 256
 fov: 1.57
+vertical_fov: 60
 
 use_filler: true
 display_ui: false
