@@ -24,6 +24,7 @@ from hrl4in.utils.args import *
 import gibson2
 from gibson2.envs.parallel_env import ParallelNavEnvironment
 from gibson2.envs.locomotor_env import NavigateEnv, NavigateRandomEnv, NavigateRandomHeightEnv
+from gibson2.envs.locomotor_env_obs import NavigateObstacleEnv, NavigateRandomObstacleEnv
 
 def evaluate(envs,
              actor_critic,
@@ -231,7 +232,7 @@ def main():
                                          device_idx=device_idx)
             elif args.random_position:
                 print("RANDOM POS")
-                return NavigateRandomEnv(config_file=config_file,
+                return NavigateRandomObstacleEnv(config_file=config_file,
                                          mode=env_mode,
                                          action_timestep=args.action_timestep,
                                          physics_timestep=args.physics_timestep,
@@ -240,7 +241,7 @@ def main():
                                          device_idx=device_idx)
             else:
                 print("NOT RANDOM")
-                return NavigateEnv(config_file=config_file,
+                return NavigateObstacleEnv(config_file=config_file,
                                    mode=env_mode,
                                    action_timestep=args.action_timestep,
                                    physics_timestep=args.physics_timestep,

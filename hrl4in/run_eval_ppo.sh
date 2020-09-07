@@ -1,7 +1,7 @@
 #!/bin/bash
 
 gpu="0"
-pos="wall_fov_90_mov_short"
+pos="wall_fov_90_mov_in_front"
 reward_type="l2"
 tol=0.1
 success_reward=30.0
