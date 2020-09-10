@@ -2,14 +2,14 @@
 if __name__ == "__main__":
 	gpu="0"
 	gamma=0.99 
-	num_steps="250"
+	num_steps="400"
 
-	for pos in ["wrist"]:
+	for pos in ["head"]:
 		for lr in ["1e-4"]:
-			for tol in [0.06]:
+			for tol in [0.5]:
 				for wheel_vel in [0.2]:
-					for arm_vel in [0.1]:
-						for suc_rwd in [10.0]:
+					for arm_vel in [0.0]:
+						for suc_rwd in [30.0]:
 							for pot_rwd in [5.0]:
 								for col_rwd in [-10.0]:
 
@@ -20,22 +20,23 @@ if __name__ == "__main__":
 									
 									f.write("scene: stadium\n\n")
 
-									f.write("robot: JR2_Kinova_Wrist\n")
+									f.write("robot: JR2_Kinova_Head\n")
 									f.write("wheel_velocity: {}\n".format(wheel_vel))
+									f.write("head_velocity: 0.2\n")
 									f.write("arm_velocity: {}\n\n".format(arm_vel))
 
-									f.write("task: reaching\n")
+									f.write("task: pointgoal\n")
 									f.write("fisheye: false\n\n")
 
 									f.write("initial_pos: [0.0, 0.0, 0.0]\n")
 									f.write("initial_orn: [0.0, 0.0, 0.0]\n\n")
 
-									f.write("target_pos: [2.0, 2.0, 1.2]\n")
+									f.write("target_pos: [4.0, 0.0, 0.0]\n")
 									f.write("target_orn: [0.0, 0.0, 0.0]\n\n")
 
 									f.write("is_discrete: false\n")
-									f.write("additional_states_dim: 20\n")
-									f.write("goal_dim: 3\n\n")
+									f.write("additional_states_dim: 4\n")
+									f.write("goal_dim: 0\n\n")
 
 									f.write("reward_type: l2\n")
 									f.write("success_reward: {}\n".format(suc_rwd))
@@ -51,9 +52,9 @@ if __name__ == "__main__":
 									f.write("dist_tol: {}\n".format(tol))
 									f.write("max_step: {}\n\n".format(num_steps))
 
-									f.write("output: [sensor, goal, depth, rgb, seg]\n")
+									f.write("output: [sensor, depth, rgb, seg]\n")
 									f.write("resolution: 256\n")
-									f.write("fov: 1.57\n\n")
+									f.write("vertical_fov: 90\n\n")
 
 									f.write("use_filler: true\n")
 									f.write("display_ui: false\n")
