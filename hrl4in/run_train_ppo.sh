@@ -1,7 +1,7 @@
 #!/bin/bash
 
 gpu="0"
-pos="head"
+pos="head_2.5"
 reward_type="l2"
 tol=0.5
 success_reward=30.0

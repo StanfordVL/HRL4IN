@@ -232,7 +232,7 @@ def main():
                                          device_idx=device_idx)
             elif args.random_position:
                 print("RANDOM POS")
-                return NavigateRandomEnv(config_file=config_file,
+                return NavigateRandomObstacleEnv(config_file=config_file,
                                          mode=env_mode,
                                          action_timestep=args.action_timestep,
                                          physics_timestep=args.physics_timestep,
