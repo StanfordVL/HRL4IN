@@ -1,7 +1,7 @@
 #!/bin/bash
 
 gpu="0"
-pos="head_na"
+pos="head_na_2.5"
 reward_type="l2"
 tol=0.5
 success_reward=30.0
@@ -9,7 +9,7 @@ potential_reward=5.0
 col_reward=-10.0
 gamma=0.999 
 lr="1e-4"
-num_steps="350"
+num_steps="250"
 speed="0.1_0.05"
 
 log_dir="jr2_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_col_rwd_"$col_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
