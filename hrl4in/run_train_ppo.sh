@@ -10,7 +10,7 @@ col_reward=-10.0
 gamma=0.999 
 lr="1e-4"
 num_steps="350"
-speed="0.2_0.05"
+speed="0.2_0.2"
 
 log_dir="jr2_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_col_rwd_"$col_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
 echo $log_dir
