@@ -90,6 +90,7 @@ class PPO(nn.Module):
                         obs_batch,
                         recurrent_hidden_states_batch,
                         actions_batch,
+                        camera_mask_indices_batch,
                         value_preds_batch,
                         return_batch,
                         masks_batch,
@@ -129,6 +130,7 @@ class PPO(nn.Module):
                         recurrent_hidden_states_batch,
                         masks_batch,
                         actions_batch,
+                        camera_mask_indices_batch, 
                         update=update,
                     )
 

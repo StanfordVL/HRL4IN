@@ -20,6 +20,8 @@ class Policy(nn.Module):
     def __init__(self,
                  observation_space,
                  action_space,
+                 use_camera_masks=False,
+                 camera_masks_dim=3,
                  hidden_size=512,
                  cnn_layers_params=None,
                  initial_stddev=1.0 / 3.0,
@@ -55,6 +57,12 @@ class Policy(nn.Module):
             num_outputs = action_space.nvec
             self.action_distribution = MultiCategoricalNet(self.net.output_size, num_outputs)
 
+        # For discrete camera action
+        self.use_camera_masks = use_camera_masks
+
+        if self.use_camera_masks:
+            self.camera_mask_distribution = CategoricalNet(self.net.output_size, camera_masks_dim)
+
     def forward(self, *x):
         raise NotImplementedError
 
@@ -78,13 +86,24 @@ class Policy(nn.Module):
             action = distribution.sample()
         action_log_probs = distribution.log_probs(action)
 
-        return value, action, action_log_probs, rnn_hidden_states
+        if self.use_camera_masks:
+            camera_mask_distribution = self.camera_mask_distribution(actor_features)
+            if deterministic: 
+                camera_mask_indices = camera_mask_distribution.mode()
+            else: 
+                camera_mask_indices = camera_mask_distribution.sample()
+            camera_mask_log_probs = camera_mask_distribution.log_probs(camera_mask_indices)
+        else: 
+            camera_mask_indices = torch.zeros_like(action_log_probs, dtype=torch.long)
+            camera_mask_log_probs = torch.zeros_like(action_log_probs)
+
+        return value, action, action_log_probs, camera_mask_indices, camera_mask_log_probs, rnn_hidden_states
 
     def get_value(self, observations, rnn_hidden_states, masks):
         value, _, _ = self.net(observations, rnn_hidden_states, masks)
         return value
 
-    def evaluate_actions(self, observations, rnn_hidden_states, masks, action, update=None):
+    def evaluate_actions(self, observations, rnn_hidden_states, masks, action, camera_mask_indices, update=None):
         value, actor_features, rnn_hidden_states = self.net(
             observations, rnn_hidden_states, masks
         )
@@ -96,4 +115,15 @@ class Policy(nn.Module):
         action_log_probs = distribution.log_probs(action)
         distribution_entropy = distribution.entropy()
 
-        return value, action_log_probs, distribution_entropy, rnn_hidden_states
+        if self.use_camera_masks:
+            camera_mask_distribution = self.camera_mask_distribution(actor_features)
+            camera_mask_log_probs = camera_mask_distribution.log_probs(camera_mask_indices)
+            camera_mask_dist_entropy = camera_mask_distribution.entropy()
+        else: 
+            camera_mask_log_probs = torch.zeros_like(action_log_probs)
+            camera_mask_dist_entropy = torch.zeros_like(distribution_entropy)
+
+        complete_action_log_probs = action_log_probs + camera_mask_log_probs
+        dist_entropy = distribution_entropy + camera_mask_dist_entropy
+
+        return value, complete_action_log_probs, dist_entropy, rnn_hidden_states

@@ -47,6 +47,12 @@ def add_env_args(parser):
         default="complex_hl_ll",
         help="arena to load on pybullet",
     )
+    group.add_argument(
+        "--use-camera-masks",
+        action="store_true",
+        default=False,
+        help="whether to use discrete camera actions",
+    )
 
 
 def add_hrl_args(parser):

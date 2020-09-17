@@ -57,7 +57,7 @@ def evaluate(envs,
 
     while episode_counts.sum() < num_eval_episodes:
         with torch.no_grad():
-            _, actions, _, recurrent_hidden_states = actor_critic.act(
+            _, actions, _, camera_mask_indices, _, recurrent_hidden_states = actor_critic.act(
                 batch,
                 recurrent_hidden_states,
                 masks,
@@ -65,6 +65,10 @@ def evaluate(envs,
                 update=0,
             )
         actions_np = actions.cpu().numpy()
+
+        if actor_critic.use_camera_masks: 
+            envs.set_camera(camera_mask_indices.cpu().numpy())
+
         outputs = envs.step(actions_np)
 
         observations, rewards, dones, infos = [list(x) for x in zip(*outputs)]
@@ -271,6 +275,8 @@ def main():
     actor_critic = Policy(
         observation_space=train_envs.observation_space,
         action_space=train_envs.action_space,
+        use_camera_masks=args.use_camera_masks,
+        camera_masks_dim=3,
         hidden_size=args.hidden_size,
         cnn_layers_params=cnn_layers_params,
         initial_stddev=args.action_init_std_dev,
@@ -379,6 +385,8 @@ def main():
                     values,
                     actions,
                     actions_log_probs,
+                    camera_mask_indices, 
+                    camera_mask_log_probs, 
                     recurrent_hidden_states,
                 ) = actor_critic.act(
                     step_observation,
@@ -399,6 +407,11 @@ def main():
             #     (observation, reward, done, info),
             # ]
             # len(outputs) == num_processes
+
+            # TODO: CAMERA ACTION
+            if args.use_camera_masks:
+                train_envs.set_camera(camera_mask_indices.cpu().numpy())
+
             outputs = train_envs.step(actions_np)
             observations, rewards, dones, infos = [list(x) for x in zip(*outputs)]
             env_time += time() - t_step_env
@@ -479,6 +492,8 @@ def main():
                 recurrent_hidden_states,
                 actions,
                 actions_log_probs,
+                camera_mask_indices,
+                camera_mask_log_probs,
                 values,
                 rewards,
                 masks,
