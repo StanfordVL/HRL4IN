@@ -30,7 +30,7 @@ max_collisions_allowed: 0
 discount_factor: 0.999
 
 dist_tol: 0.5
-max_step: 350
+max_step: 500
 
 output: [sensor, rgb, depth, seg]
 resolution: 256
