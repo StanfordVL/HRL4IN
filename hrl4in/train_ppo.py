@@ -276,7 +276,7 @@ def main():
         observation_space=train_envs.observation_space,
         action_space=train_envs.action_space,
         use_camera_masks=args.use_camera_masks,
-        camera_masks_dim=3,
+        camera_masks_dim=9,
         hidden_size=args.hidden_size,
         cnn_layers_params=cnn_layers_params,
         initial_stddev=args.action_init_std_dev,
