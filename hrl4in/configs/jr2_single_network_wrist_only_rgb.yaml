@@ -30,7 +30,7 @@ max_collisions_allowed: 500
 discount_factor: 0.999
 
 dist_tol: 0.06
-max_step: 250
+max_step: 120
 
 output: [sensor, goal, wrist_rgb]
 resolution: 256
