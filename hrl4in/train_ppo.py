@@ -6,6 +6,7 @@
 
 import os
 from time import time
+from time import sleep
 from collections import deque
 import random
 import numpy as np
@@ -70,6 +71,7 @@ def evaluate(envs,
             envs.set_camera(camera_mask_indices.cpu().numpy())
 
         outputs = envs.step(actions_np)
+        #sleep(0.01)
 
         observations, rewards, dones, infos = [list(x) for x in zip(*outputs)]
 

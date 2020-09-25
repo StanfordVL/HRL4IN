@@ -108,15 +108,30 @@ class Net(nn.Module):
         else:
             self._n_input_rgb = 0
 
+        if "wrist_rgb" in observation_space.spaces:
+            self._n_input_wrist_rgb = observation_space.spaces["wrist_rgb"].shape[2]
+        else:
+            self._n_input_wrist_rgb = 0
+
         if "depth" in observation_space.spaces:
             self._n_input_depth = observation_space.spaces["depth"].shape[2]
         else:
             self._n_input_depth = 0
 
+        if "wrist_depth" in observation_space.spaces:
+            self._n_input_wrist_depth = observation_space.spaces["wrist_depth"].shape[2]
+        else:
+            self._n_input_wrist_depth = 0
+
         if "seg" in observation_space.spaces:
             self._n_input_seg = observation_space.spaces["seg"].shape[2]
         else:
             self._n_input_seg = 0
+
+        if "wrist_seg" in observation_space.spaces:
+            self._n_input_wrist_seg = observation_space.spaces["wrist_seg"].shape[2]
+        else:
+            self._n_input_wrist_seg = 0
 
         if "global_map" in observation_space.spaces:
             self._n_input_global_map = observation_space.spaces["global_map"].shape[0]
@@ -155,7 +170,8 @@ class Net(nn.Module):
             prev_out_channels = None
             for i, (out_channels, kernel_size, stride, padding) in enumerate(self._cnn_layers_params):
                 if i == 0:
-                    in_channels = self._n_input_rgb + self._n_input_depth + self._n_input_seg + \
+                    in_channels = self._n_input_rgb + self._n_input_wrist_rgb + self._n_input_depth + \
+                                  self._n_input_wrist_depth + self._n_input_seg + self._n_input_wrist_seg + \
                                   self._n_input_global_map + self._n_input_local_map
                 else:
                     in_channels = prev_out_channels
@@ -269,7 +285,8 @@ class Net(nn.Module):
 
     @property
     def is_blind(self):
-        return self._n_input_rgb + self._n_input_depth + self._n_input_seg + self._n_input_global_map + self._n_input_local_map == 0
+        return self._n_input_rgb + self._n_input_wrist_rgb + self._n_input_depth + self._n_input_wrist_depth + \
+               self._n_input_seg + self._n_input_wrist_seg + self._n_input_global_map + self._n_input_local_map == 0
 
     def forward_perception_model(self, observations):
         cnn_input = []
@@ -280,17 +297,36 @@ class Net(nn.Module):
             rgb_observations = rgb_observations / 255.0  # normalize RGB
             cnn_input.append(rgb_observations)
 
+        if self._n_input_wrist_rgb > 0:
+            wrist_rgb_observations = observations["wrist_rgb"]
+            # permute tensor to dimension [BATCH x CHANNEL x HEIGHT X WIDTH]
+            wrist_rgb_observations = wrist_rgb_observations.permute(0, 3, 1, 2)
+            wrist_rgb_observations = wrist_rgb_observations / 255.0  # normalize RGB
+            cnn_input.append(wrist_rgb_observations)
+
         if self._n_input_depth > 0:
             depth_observations = observations["depth"]
             # permute tensor to dimension [BATCH x CHANNEL x HEIGHT X WIDTH]
             depth_observations = depth_observations.permute(0, 3, 1, 2)
             cnn_input.append(depth_observations)
 
+        if self._n_input_wrist_depth > 0:
+            wrist_depth_observations = observations["wrist_depth"]
+            # permute tensor to dimension [BATCH x CHANNEL x HEIGHT X WIDTH]
+            wrist_depth_observations = wrist_depth_observations.permute(0, 3, 1, 2)
+            cnn_input.append(wrist_depth_observations)
+
         if self._n_input_seg > 0:
             seg_observations = observations["seg"]
             # permute tensor to dimension [BATCH x CHANNEL x HEIGHT X WIDTH]
             seg_observations = seg_observations.permute(0, 3, 1, 2)
             cnn_input.append(seg_observations)
+
+        if self._n_input_wrist_seg > 0:
+            wrist_seg_observations = observations["wrist_seg"]
+            # permute tensor to dimension [BATCH x CHANNEL x HEIGHT X WIDTH]
+            wrist_seg_observations = wrist_seg_observations.permute(0, 3, 1, 2)
+            cnn_input.append(wrist_seg_observations)
 
         if self._n_input_global_map > 0:
             global_map_observations = observations["global_map"]
