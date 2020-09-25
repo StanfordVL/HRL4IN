@@ -16,7 +16,7 @@ target_orn: [0.0, 0.0, 0.0]
 
 is_discrete: false
 additional_states_dim: 28
-goal_dim: 0
+goal_dim: 3
 
 reward_type: l2
 success_reward: 30.0
@@ -32,7 +32,7 @@ discount_factor: 0.999
 dist_tol: 0.05
 max_step: 250
 
-output: [sensor, wrist_rgb, wrist_depth, wrist_seg]
+output: [sensor, goal, wrist_rgb, wrist_depth, wrist_seg]
 resolution: 256
 vertical_fov: 60
 
