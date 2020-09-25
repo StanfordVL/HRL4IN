@@ -15,7 +15,7 @@ target_pos: [4.0, 0.0, 0.0]
 target_orn: [0.0, 0.0, 0.0]
 
 is_discrete: false
-additional_states_dim: 28
+additional_states_dim: 22
 goal_dim: 3
 
 reward_type: l2
@@ -27,14 +27,14 @@ collision_ignore_link_a_ids: []
 collision_ignore_body_b_ids: [1,3]
 max_collisions_allowed: 500
 
-discount_factor: 0.999
+discount_factor: 0.99
 
 dist_tol: 0.11
 max_step: 120
 
 output: [sensor, goal, rgb, depth, seg]
 resolution: 256
-vertical_fov: 60
+vertical_fov: 90
 
 use_filler: true
 display_ui: false
