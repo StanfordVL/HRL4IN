@@ -149,6 +149,13 @@ class Net(nn.Module):
             cnn_dims = np.array(observation_space.spaces["depth"].shape[:2], dtype=np.float32)
         elif self._n_input_seg > 0:
             cnn_dims = np.array(observation_space.spaces["seg"].shape[:2], dtype=np.float32)
+        elif self._n_input_wrist_rgb > 0:
+            cnn_dims = np.array(observation_space.spaces["wrist_rgb"].shape[:2], dtype=np.float32)
+        elif self._n_input_wrist_depth > 0:
+            cnn_dims = np.array(observation_space.spaces["wrist_depth"].shape[:2], dtype=np.float32)
+        elif self._n_input_wrist_seg > 0:
+            cnn_dims = np.array(observation_space.spaces["wrist_seg"].shape[:2], dtype=np.float32)
+
         elif self._n_input_global_map > 0:
             cnn_dims = np.array(observation_space.spaces["global_map"].shape[1:3], dtype=np.float32)
         elif self._n_input_local_map > 0:
