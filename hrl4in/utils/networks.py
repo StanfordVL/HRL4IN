@@ -35,6 +35,16 @@ class Net(nn.Module):
         else:
             self._n_non_vis_sensor = 0
 
+        if "base_proprioceptive" in observation_space.spaces: 
+            self._n_base_proprioceptive = observation_space.spaces["base_proprioceptive"].shape[0]
+        else:
+            self._n_base_proprioceptive = 0
+
+        if "arm_proprioceptive" in observation_space.spaces: 
+            self._n_arm_proprioceptive = observation_space.spaces["arm_proprioceptive"].shape[0]
+        else:
+            self._n_arm_proprioceptive = 0
+
         if "auxiliary_sensor" in observation_space.spaces:
             self._n_auxiliary_sensor = observation_space.spaces["auxiliary_sensor"].shape[0]
         else:
@@ -62,6 +72,8 @@ class Net(nn.Module):
 
         self._n_additional_rnn_input = (
                 self._n_non_vis_sensor + 
+                self._n_base_proprioceptive + 
+                self._n_arm_proprioceptive + 
                 self._n_auxiliary_sensor +
                 self._n_subgoal +
                 self._n_subgoal_mask +
@@ -94,15 +106,13 @@ class Net(nn.Module):
 
         self.rnn = nn.GRU(self._rnn_input_size, self._hidden_size)
         
-        self.critic_linear = nn.Linear(self._hidden_size + self._goal_hidden_size, 1)
-        self.goal_linear = nn.Linear(3, self._goal_hidden_size)
+        #self.critic_linear = nn.Linear(self._hidden_size + self._goal_hidden_size, 1)
+        #self.goal_linear = nn.Linear(3, self._goal_hidden_size)
 
         self.layer_init()
         self.train()
 
     def _init_perception_model(self, observation_space):
-        print("OBSERVATION SPACE")
-        print(observation_space.spaces)
         if "rgb" in observation_space.spaces:
             self._n_input_rgb = observation_space.spaces["rgb"].shape[2]
         else:
@@ -234,8 +244,8 @@ class Net(nn.Module):
             elif "bias" in name:
                 nn.init.constant_(param, 0)
 
-        nn.init.orthogonal_(self.critic_linear.weight, gain=1)
-        nn.init.constant_(self.critic_linear.bias, val=0)
+        #nn.init.orthogonal_(self.critic_linear.weight, gain=1)
+        #nn.init.constant_(self.critic_linear.bias, val=0)
 
     def forward_rnn(self, x, hidden_states, masks):
         if x.size(0) == hidden_states.size(0):
@@ -352,6 +362,10 @@ class Net(nn.Module):
             additional_rnn_input = []
             if self._n_non_vis_sensor > 0:
                 additional_rnn_input.append(observations["sensor"])
+            if self._n_base_proprioceptive > 0:
+                additional_rnn_input.append(observations["base_proprioceptive"])
+            if self._n_arm_proprioceptive > 0:
+                additional_rnn_input.append(observations["arm_proprioceptive"])
             if self._n_auxiliary_sensor > 0:
                 additional_rnn_input.append(observations["auxiliary_sensor"])
             if self._n_scan > 0:
@@ -374,7 +388,9 @@ class Net(nn.Module):
 
         x, rnn_hidden_states = self.forward_rnn(x, rnn_hidden_states, masks)
 
-        goal_embedding = self.goal_linear(observations['goal'])
+        return x, rnn_hidden_states
 
-        return self.critic_linear(torch.cat((x, goal_embedding), dim=1)), x, rnn_hidden_states
+        #goal_embedding = self.goal_linear(observations['goal'])
+
+        #return self.critic_linear(torch.cat((x, goal_embedding), dim=1)), x, rnn_hidden_states
         #return self.critic_linear(x), x, rnn_hidden_states

@@ -53,6 +53,12 @@ def add_env_args(parser):
         default=False,
         help="whether to use discrete camera actions",
     )
+    group.add_argument(
+        "--split-network",
+        action="store_true",
+        default=False,
+        help="whether to use the split network architecture",
+    )
 
 
 def add_hrl_args(parser):
