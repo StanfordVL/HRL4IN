@@ -96,7 +96,7 @@ class Policy(nn.Module):
                                            high=1.0,
                                            dtype=np.float32)
 
-            self.arm_action_space = gym.spaces.Box(shape=(5,),
+            self.arm_action_space = gym.spaces.Box(shape=(7,),
                                            low=-1.0,
                                            high=1.0,
                                            dtype=np.float32)
@@ -110,7 +110,7 @@ class Policy(nn.Module):
                                                            min_stddev=min_stddev,
                                                            stddev_transform=stddev_transform)
                 self.arm_action_distribution = DiagGaussianNet(self.arm_net.output_size,
-                                                           5,
+                                                           7,
                                                            self.arm_action_space,
                                                            squash_mean=True,
                                                            initial_stddev=initial_stddev,
@@ -216,7 +216,11 @@ class Policy(nn.Module):
                 camera_mask_log_probs = torch.zeros_like(base_action_log_probs)
 
             value = self.get_value(observations, base_rnn_hidden_states, arm_rnn_hidden_states, masks)
-            action = torch.cat((base_action, arm_action), dim=1)
+
+            if observations['close_to_goal']: 
+                action = arm_action
+            else: 
+                action = torch.cat((base_action, arm_action[:,2:]), dim=1)
 
             return value, action, base_action_log_probs, arm_action_log_probs, camera_mask_indices, camera_mask_log_probs, base_rnn_hidden_states, arm_rnn_hidden_states
 

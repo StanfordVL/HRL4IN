@@ -42,5 +42,6 @@ python -u train_ppo.py \
    --env-mode "headless" \
    --gamma $gamma \
    --random-pos \
+   --use-camera-masks \
    --split-network
    
