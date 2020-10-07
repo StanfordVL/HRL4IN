@@ -225,9 +225,9 @@ class Policy(nn.Module):
                 base_action_log_probs = base_distribution.log_probs(base_action, 0, 0)
                 arm_action_log_probs = arm_distribution.log_probs(arm_action, 0, 7)
             else: 
-                action = torch.cat((base_action, arm_action[:,2:]), dim=1)
+                action = torch.cat((base_action, torch.zeros(5).unsqueeze(0)), dim=1)
                 base_action_log_probs = base_distribution.log_probs(base_action, 0, 2)
-                arm_action_log_probs = arm_distribution.log_probs(arm_action, 2, 7)
+                arm_action_log_probs = arm_distribution.log_probs(arm_action, 0, 0)
 
             #action = torch.cat((base_action, arm_action), dim=1)
             #action = arm_action
@@ -313,7 +313,7 @@ class Policy(nn.Module):
                 camera_mask_dist_entropy = torch.zeros_like(base_distribution_entropy)
 
             #complete_action_log_probs = base_action_log_probs + arm_action_log_probs + camera_mask_log_probs
-            complete_action_log_probs = (1-close_to_goal)*base_action_log_probs + close_to_goal*arm_action_log_probs_base + arm_action_log_probs_arm + camera_mask_log_probs
+            complete_action_log_probs = (1-close_to_goal)*base_action_log_probs + close_to_goal*(arm_action_log_probs_base + arm_action_log_probs_arm) + camera_mask_log_probs
             dist_entropy = base_distribution_entropy + arm_distribution_entropy + camera_mask_dist_entropy
 
             value = self.get_value(observations, base_rnn_hidden_states, arm_rnn_hidden_states, masks)
