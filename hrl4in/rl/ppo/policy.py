@@ -201,8 +201,8 @@ class Policy(nn.Module):
                 base_action = base_distribution.sample()
                 arm_action = arm_distribution.sample()
 
-            base_action_log_probs = base_distribution.log_probs(base_action)
-            arm_action_log_probs = arm_distribution.log_probs(arm_action)
+            base_action_log_probs = base_distribution.log_probs(base_action, 0, 2)
+            arm_action_log_probs = arm_distribution.log_probs(arm_action, 0, 7)
 
             if self.use_camera_masks:
                 camera_mask_distribution = self.camera_mask_distribution(base_actor_features)
@@ -217,12 +217,14 @@ class Policy(nn.Module):
 
             value = self.get_value(observations, base_rnn_hidden_states, arm_rnn_hidden_states, masks)
 
-            if observations['close_to_goal']: 
+            close_to_goal = observations['close_to_goal']
+
+            if close_to_goal: 
                 action = arm_action
             else: 
                 action = torch.cat((base_action, arm_action[:,2:]), dim=1)
 
-            return value, action, base_action_log_probs, arm_action_log_probs, camera_mask_indices, camera_mask_log_probs, base_rnn_hidden_states, arm_rnn_hidden_states
+            return value, action, close_to_goal, base_action_log_probs, arm_action_log_probs, camera_mask_indices, camera_mask_log_probs, base_rnn_hidden_states, arm_rnn_hidden_states
 
         else:
             value, actor_features, rnn_hidden_states = self.net(observations, rnn_hidden_states, masks)
@@ -267,7 +269,7 @@ class Policy(nn.Module):
             value, _, _ = self.net(observations, rnn_hidden_states, masks)
             return value
 
-    def evaluate_actions(self, observations, base_rnn_hidden_states, arm_rnn_hidden_states, masks, action, camera_mask_indices, update=None):
+    def evaluate_actions(self, observations, base_rnn_hidden_states, arm_rnn_hidden_states, masks, action, close_to_goal, camera_mask_indices, update=None):
         if self.split_network:
             base_observations, arm_observations = self.split_observations(observations)
 
@@ -283,10 +285,11 @@ class Policy(nn.Module):
                 arm_distribution = self.arm_action_distribution(arm_actor_features)
 
             base_action = action[:, :2]
-            arm_action = action[:, 2:]
+            arm_action = action
 
-            base_action_log_probs = base_distribution.log_probs(base_action)
-            arm_action_log_probs = arm_distribution.log_probs(arm_action)
+            base_action_log_probs = base_distribution.log_probs(base_action, 0, 2)
+            arm_action_log_probs_base = arm_distribution.log_probs(arm_action, 0, 2)
+            arm_action_log_probs_arm = arm_distribution.log_probs(arm_action, 2, 7)
 
             base_distribution_entropy = base_distribution.entropy()
             arm_distribution_entropy = arm_distribution.entropy()
@@ -299,7 +302,7 @@ class Policy(nn.Module):
                 camera_mask_log_probs = torch.zeros_like(base_action_log_probs)
                 camera_mask_dist_entropy = torch.zeros_like(base_distribution_entropy)
 
-            complete_action_log_probs = base_action_log_probs + arm_action_log_probs + camera_mask_log_probs
+            complete_action_log_probs = (1-close_to_goal)*base_action_log_probs + close_to_goal*arm_action_log_probs_base + arm_action_log_probs_arm + camera_mask_log_probs
             dist_entropy = base_distribution_entropy + arm_distribution_entropy + camera_mask_dist_entropy
 
             value = self.get_value(observations, base_rnn_hidden_states, arm_rnn_hidden_states, masks)

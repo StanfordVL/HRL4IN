@@ -91,6 +91,7 @@ class PPO(nn.Module):
                         base_recurrent_hidden_states_batch,
                         arm_recurrent_hidden_states_batch, 
                         actions_batch,
+                        close_to_goal_batch, 
                         camera_mask_indices_batch,
                         value_preds_batch,
                         return_batch,
@@ -133,6 +134,7 @@ class PPO(nn.Module):
                         arm_recurrent_hidden_states_batch,
                         masks_batch,
                         actions_batch,
+                        close_to_goal_batch, 
                         camera_mask_indices_batch, 
                         update=update,
                     )

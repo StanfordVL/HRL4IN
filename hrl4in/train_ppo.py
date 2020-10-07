@@ -59,7 +59,7 @@ def evaluate(envs,
 
     while episode_counts.sum() < num_eval_episodes:
         with torch.no_grad():
-            _, actions, _, _, camera_mask_indices, _, base_recurrent_hidden_states, arm_recurrent_hidden_states= actor_critic.act(
+            _, actions, _, _, _, camera_mask_indices, _, base_recurrent_hidden_states, arm_recurrent_hidden_states= actor_critic.act(
                 batch,
                 base_recurrent_hidden_states,
                 arm_recurrent_hidden_states, 
@@ -392,6 +392,7 @@ def main():
                 (
                     values,
                     actions,
+                    close_to_goal, 
                     base_actions_log_probs, 
                     arm_actions_log_probs,
                     camera_mask_indices, 
@@ -506,6 +507,7 @@ def main():
                 base_recurrent_hidden_states,
                 arm_recurrent_hidden_states, 
                 actions,
+                close_to_goal, 
                 base_actions_log_probs,
                 arm_actions_log_probs, 
                 camera_mask_indices,
