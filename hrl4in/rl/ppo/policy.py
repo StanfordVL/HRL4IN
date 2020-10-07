@@ -96,7 +96,7 @@ class Policy(nn.Module):
                                            high=1.0,
                                            dtype=np.float32)
 
-            self.arm_action_space = gym.spaces.Box(shape=(5,),
+            self.arm_action_space = gym.spaces.Box(shape=(7,),
                                            low=-1.0,
                                            high=1.0,
                                            dtype=np.float32)
@@ -111,7 +111,7 @@ class Policy(nn.Module):
                                                            stddev_transform=stddev_transform)
 
                 self.arm_action_distribution = DiagGaussianNet(self.arm_net.output_size,
-                                                           5,
+                                                           7,
                                                            self.arm_action_space,
                                                            squash_mean=True,
                                                            initial_stddev=initial_stddev,
@@ -202,7 +202,7 @@ class Policy(nn.Module):
                 base_action = base_distribution.sample()
                 arm_action = arm_distribution.sample()
 
-            base_action_log_probs = base_distribution.log_probs(base_action, 0, 2)
+            base_action_log_probs = base_distribution.log_probs(base_action, 0, 0)
             arm_action_log_probs = arm_distribution.log_probs(arm_action, 0, 7)
 
             if self.use_camera_masks:
@@ -225,7 +225,8 @@ class Policy(nn.Module):
             #else: 
             #    action = torch.cat((base_action, arm_action[:,2:]), dim=1)
 
-            action = torch.cat((base_action, arm_action), dim=1)
+            #action = torch.cat((base_action, arm_action), dim=1)
+            action = arm_action
 
             return value, action, close_to_goal, base_action_log_probs, arm_action_log_probs, camera_mask_indices, camera_mask_log_probs, base_rnn_hidden_states, arm_rnn_hidden_states
 
@@ -289,13 +290,13 @@ class Policy(nn.Module):
 
             base_action = action[:, :2]
             #arm_action = action
-            arm_action = action[:, 2:]
+            arm_action = action
 
 
-            base_action_log_probs = base_distribution.log_probs(base_action, 0, 2)
+            base_action_log_probs = base_distribution.log_probs(base_action, 0, 0)
             #arm_action_log_probs_base = arm_distribution.log_probs(arm_action, 0, 2)
             #arm_action_log_probs_arm = arm_distribution.log_probs(arm_action, 2, 7)
-            arm_action_log_probs = arm_distribution.log_probs(arm_action, 0, 5)
+            arm_action_log_probs = arm_distribution.log_probs(arm_action, 0, 7)
 
             base_distribution_entropy = base_distribution.entropy()
             arm_distribution_entropy = arm_distribution.entropy()
