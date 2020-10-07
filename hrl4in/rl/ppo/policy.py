@@ -96,7 +96,7 @@ class Policy(nn.Module):
                                            high=1.0,
                                            dtype=np.float32)
 
-            self.arm_action_space = gym.spaces.Box(shape=(7,),
+            self.arm_action_space = gym.spaces.Box(shape=(5,),
                                            low=-1.0,
                                            high=1.0,
                                            dtype=np.float32)
@@ -109,8 +109,9 @@ class Policy(nn.Module):
                                                            initial_stddev=initial_stddev,
                                                            min_stddev=min_stddev,
                                                            stddev_transform=stddev_transform)
+
                 self.arm_action_distribution = DiagGaussianNet(self.arm_net.output_size,
-                                                           7,
+                                                           5,
                                                            self.arm_action_space,
                                                            squash_mean=True,
                                                            initial_stddev=initial_stddev,
@@ -219,10 +220,12 @@ class Policy(nn.Module):
 
             close_to_goal = observations['close_to_goal']
 
-            if close_to_goal: 
-                action = arm_action
-            else: 
-                action = torch.cat((base_action, arm_action[:,2:]), dim=1)
+            #if close_to_goal: 
+            #    action = arm_action
+            #else: 
+            #    action = torch.cat((base_action, arm_action[:,2:]), dim=1)
+
+            action = torch.cat((base_action, arm_action), dim=1)
 
             return value, action, close_to_goal, base_action_log_probs, arm_action_log_probs, camera_mask_indices, camera_mask_log_probs, base_rnn_hidden_states, arm_rnn_hidden_states
 
@@ -285,11 +288,14 @@ class Policy(nn.Module):
                 arm_distribution = self.arm_action_distribution(arm_actor_features)
 
             base_action = action[:, :2]
-            arm_action = action
+            #arm_action = action
+            arm_action = action[:, 2:]
+
 
             base_action_log_probs = base_distribution.log_probs(base_action, 0, 2)
-            arm_action_log_probs_base = arm_distribution.log_probs(arm_action, 0, 2)
-            arm_action_log_probs_arm = arm_distribution.log_probs(arm_action, 2, 7)
+            #arm_action_log_probs_base = arm_distribution.log_probs(arm_action, 0, 2)
+            #arm_action_log_probs_arm = arm_distribution.log_probs(arm_action, 2, 7)
+            arm_action_log_probs = arm_distribution.log_probs(arm_action, 0, 5)
 
             base_distribution_entropy = base_distribution.entropy()
             arm_distribution_entropy = arm_distribution.entropy()
@@ -302,7 +308,8 @@ class Policy(nn.Module):
                 camera_mask_log_probs = torch.zeros_like(base_action_log_probs)
                 camera_mask_dist_entropy = torch.zeros_like(base_distribution_entropy)
 
-            complete_action_log_probs = (1-close_to_goal)*base_action_log_probs + close_to_goal*arm_action_log_probs_base + arm_action_log_probs_arm + camera_mask_log_probs
+            complete_action_log_probs = base_action_log_probs + arm_action_log_probs + camera_mask_log_probs
+            #complete_action_log_probs = (1-close_to_goal)*base_action_log_probs + close_to_goal*arm_action_log_probs_base + arm_action_log_probs_arm + camera_mask_log_probs
             dist_entropy = base_distribution_entropy + arm_distribution_entropy + camera_mask_dist_entropy
 
             value = self.get_value(observations, base_rnn_hidden_states, arm_rnn_hidden_states, masks)
