@@ -9,11 +9,11 @@ potential_reward=5.0
 col_reward=-5.0
 gamma=0.99
 lr="1e-4"
-num_steps="200"
+num_steps="100"
 speed="0.2_0"
 
 log_dir="jr2_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_col_rwd_"$col_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
-log_dir="jr2_split_network_heuristic_stationary_arm_debug"
+log_dir="jr2_split_network_heuristic_stationary_arm_debug_fast"
 echo $log_dir
 
 python -u train_ppo.py \
