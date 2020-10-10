@@ -38,6 +38,9 @@ class RolloutStorage:
 
         self.base_action_log_probs = torch.zeros(num_steps, num_envs, 1)
         self.arm_action_log_probs = torch.zeros(num_steps, num_envs, 1)
+        self.base_confidence_score_log_probs = torch.zeros(num_steps, num_envs, 1)
+        self.arm_confidence_score_log_probs = torch.zeros(num_steps, num_envs, 1)
+
         if action_space.__class__.__name__ == "Discrete":
             action_shape = 1
         else:
@@ -48,6 +51,7 @@ class RolloutStorage:
             self.actions = self.actions.long()
 
         self.close_to_goal = torch.zeros(num_steps, num_envs, 1)
+        self.confidence_scores = torch.zeros(num_steps, num_envs, 2)
 
         self.camera_mask_log_probs = torch.zeros(num_steps, num_envs, 1)
         self.camera_mask_indices = torch.zeros(num_steps, num_envs, 1)
@@ -69,8 +73,11 @@ class RolloutStorage:
         self.returns = self.returns.to(device)
         self.base_action_log_probs = self.base_action_log_probs.to(device)
         self.arm_action_log_probs = self.arm_action_log_probs.to(device)
+        self.base_confidence_score_log_probs = self.base_confidence_score_log_probs.to(device)
+        self.arm_confidence_score_log_probs = self.arm_confidence_score_log_probs.to(device)
         self.actions = self.actions.to(device)
         self.close_to_goal = self.close_to_goal.to(device)
+        self.confidence_scores = self.confidence_scores.to(device)
         self.camera_mask_log_probs = self.camera_mask_log_probs.to(device)
         self.camera_mask_indices = self.camera_mask_indices.to(device)
         self.masks = self.masks.to(device)
@@ -83,8 +90,11 @@ class RolloutStorage:
             arm_recurrent_hidden_states, 
             actions,
             close_to_goal, 
+            confidence_scores, 
             base_action_log_probs,
             arm_action_log_probs, 
+            base_confidence_score_log_probs, 
+            arm_confidence_score_log_probs, 
             camera_mask_indices,
             camera_mask_log_probs,
             value_preds,
@@ -105,6 +115,9 @@ class RolloutStorage:
         self.close_to_goal[self.step].copy_(close_to_goal)
         self.base_action_log_probs[self.step].copy_(base_action_log_probs)
         self.arm_action_log_probs[self.step].copy_(arm_action_log_probs)
+        self.base_confidence_score_log_probs[self.step].copy_(base_confidence_score_log_probs)
+        self.arm_confidence_score_log_probs[self.step].copy_(arm_confidence_score_log_probs)
+        self.confidence_scores[self.step].copy_(confidence_scores)
         self.camera_mask_indices[self.step].copy_(camera_mask_indices)
         self.camera_mask_log_probs[self.step].copy_(camera_mask_log_probs)
         self.value_preds[self.step].copy_(value_preds)
@@ -158,6 +171,7 @@ class RolloutStorage:
             arm_recurrent_hidden_states_batch = []
             actions_batch = []
             close_to_goal_batch = []
+            confidence_scores_batch = []
             camera_mask_indices_batch = []
             value_preds_batch = []
             return_batch = []
@@ -183,6 +197,7 @@ class RolloutStorage:
 
                 actions_batch.append(self.actions[:, ind])
                 close_to_goal_batch.append(self.close_to_goal[:, ind])
+                confidence_scores_batch.append(self.confidence_scores[:, ind])
                 camera_mask_indices_batch.append(self.camera_mask_indices[:, ind])
                 value_preds_batch.append(self.value_preds[:-1, ind])
                 return_batch.append(self.returns[:-1, ind])
@@ -190,6 +205,8 @@ class RolloutStorage:
                 old_action_log_probs_batch.append(
                     self.base_action_log_probs[:, ind] + 
                     self.arm_action_log_probs[:, ind] + 
+                    self.base_confidence_score_log_probs[:, ind] + 
+                    self.arm_confidence_score_log_probs[:, ind] + 
                     self.camera_mask_log_probs[:, ind]
                 )
 
@@ -203,6 +220,7 @@ class RolloutStorage:
 
             actions_batch = torch.stack(actions_batch, 1)
             close_to_goal_batch = torch.stack(close_to_goal_batch, 1)
+            confidence_scores_batch = torch.stack(confidence_scores_batch, 1)
             camera_mask_indices_batch = torch.stack(camera_mask_indices_batch, 1)
             value_preds_batch = torch.stack(value_preds_batch, 1)
             return_batch = torch.stack(return_batch, 1)
@@ -229,6 +247,7 @@ class RolloutStorage:
 
             actions_batch = _flatten_helper(T, N, actions_batch)
             close_to_goal_batch = _flatten_helper(T, N, close_to_goal_batch)
+            confidence_scores_batch = _flatten_helper(T, N, confidence_scores_batch)
             camera_mask_indices_batch = _flatten_helper(T, N, camera_mask_indices_batch)
             value_preds_batch = _flatten_helper(T, N, value_preds_batch)
             return_batch = _flatten_helper(T, N, return_batch)
@@ -244,6 +263,7 @@ class RolloutStorage:
                 arm_recurrent_hidden_states_batch,
                 actions_batch,
                 close_to_goal_batch, 
+                confidence_scores_batch, 
                 camera_mask_indices_batch, 
                 value_preds_batch,
                 return_batch,
