@@ -42,5 +42,4 @@ python -u train_ppo.py \
    --env-mode "gui" \
    --eval-only \
    --gamma $gamma \
-   --random-pos \
-   --split-network
+   --random-pos 

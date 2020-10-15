@@ -106,8 +106,8 @@ class Net(nn.Module):
 
         self.rnn = nn.GRU(self._rnn_input_size, self._hidden_size)
         
-        #self.critic_linear = nn.Linear(self._hidden_size + self._goal_hidden_size, 1)
-        #self.goal_linear = nn.Linear(3, self._goal_hidden_size)
+        self.critic_linear = nn.Linear(self._hidden_size + self._goal_hidden_size, 1)
+        self.goal_linear = nn.Linear(3, self._goal_hidden_size)
 
         self.layer_init()
         self.train()
@@ -244,8 +244,8 @@ class Net(nn.Module):
             elif "bias" in name:
                 nn.init.constant_(param, 0)
 
-        #nn.init.orthogonal_(self.critic_linear.weight, gain=1)
-        #nn.init.constant_(self.critic_linear.bias, val=0)
+        nn.init.orthogonal_(self.critic_linear.weight, gain=1)
+        nn.init.constant_(self.critic_linear.bias, val=0)
 
     def forward_rnn(self, x, hidden_states, masks):
         if x.size(0) == hidden_states.size(0):
@@ -388,9 +388,9 @@ class Net(nn.Module):
 
         x, rnn_hidden_states = self.forward_rnn(x, rnn_hidden_states, masks)
 
-        return x, rnn_hidden_states
+        #return x, rnn_hidden_states
 
-        #goal_embedding = self.goal_linear(observations['goal'])
+        goal_embedding = self.goal_linear(observations['goal'])
 
-        #return self.critic_linear(torch.cat((x, goal_embedding), dim=1)), x, rnn_hidden_states
+        return self.critic_linear(torch.cat((x, goal_embedding), dim=1)), x, rnn_hidden_states
         #return self.critic_linear(x), x, rnn_hidden_states

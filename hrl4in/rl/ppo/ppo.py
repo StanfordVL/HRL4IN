@@ -88,11 +88,8 @@ class PPO(nn.Module):
                 else:
                     (
                         obs_batch,
-                        base_recurrent_hidden_states_batch,
-                        arm_recurrent_hidden_states_batch, 
+                        recurrent_hidden_states_batch,
                         actions_batch,
-                        close_to_goal_batch, 
-                        confidence_scores_batch, 
                         camera_mask_indices_batch,
                         value_preds_batch,
                         return_batch,
@@ -128,15 +125,11 @@ class PPO(nn.Module):
                         action_log_probs,
                         dist_entropy,
                         _,
-                        _, 
                     ) = self.actor_critic.evaluate_actions(
                         obs_batch,
-                        base_recurrent_hidden_states_batch,
-                        arm_recurrent_hidden_states_batch,
+                        recurrent_hidden_states_batch,
                         masks_batch,
                         actions_batch,
-                        close_to_goal_batch, 
-                        confidence_scores_batch, 
                         camera_mask_indices_batch, 
                         update=update,
                     )

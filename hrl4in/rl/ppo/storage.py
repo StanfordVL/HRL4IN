@@ -24,11 +24,7 @@ class RolloutStorage:
                 *observation_space.spaces[sensor].shape
             )
 
-        self.base_recurrent_hidden_states = torch.zeros(
-            num_steps + 1, num_envs, recurrent_hidden_state_size
-        )
-
-        self.arm_recurrent_hidden_states = torch.zeros(
+        self.recurrent_hidden_states = torch.zeros(
             num_steps + 1, num_envs, recurrent_hidden_state_size
         )
 
@@ -36,11 +32,7 @@ class RolloutStorage:
         self.value_preds = torch.zeros(num_steps + 1, num_envs, 1)
         self.returns = torch.zeros(num_steps + 1, num_envs, 1)
 
-        self.base_action_log_probs = torch.zeros(num_steps, num_envs, 1)
-        self.arm_action_log_probs = torch.zeros(num_steps, num_envs, 1)
-        self.base_confidence_score_log_probs = torch.zeros(num_steps, num_envs, 1)
-        self.arm_confidence_score_log_probs = torch.zeros(num_steps, num_envs, 1)
-
+        self.action_log_probs = torch.zeros(num_steps, num_envs, 1)
         if action_space.__class__.__name__ == "Discrete":
             action_shape = 1
         else:
@@ -49,9 +41,6 @@ class RolloutStorage:
         self.actions = torch.zeros(num_steps, num_envs, action_shape)
         if action_space.__class__.__name__ == "Discrete":
             self.actions = self.actions.long()
-
-        self.close_to_goal = torch.zeros(num_steps, num_envs, 1)
-        self.confidence_scores = torch.zeros(num_steps, num_envs, 2)
 
         self.camera_mask_log_probs = torch.zeros(num_steps, num_envs, 1)
         self.camera_mask_indices = torch.zeros(num_steps, num_envs, 1)
@@ -66,18 +55,12 @@ class RolloutStorage:
         for sensor in self.observations:
             self.observations[sensor] = self.observations[sensor].to(device)
 
-        self.base_recurrent_hidden_states = self.base_recurrent_hidden_states.to(device)
-        self.arm_recurrent_hidden_states = self.arm_recurrent_hidden_states.to(device)
+        self.recurrent_hidden_states = self.recurrent_hidden_states.to(device)
         self.rewards = self.rewards.to(device)
         self.value_preds = self.value_preds.to(device)
         self.returns = self.returns.to(device)
-        self.base_action_log_probs = self.base_action_log_probs.to(device)
-        self.arm_action_log_probs = self.arm_action_log_probs.to(device)
-        self.base_confidence_score_log_probs = self.base_confidence_score_log_probs.to(device)
-        self.arm_confidence_score_log_probs = self.arm_confidence_score_log_probs.to(device)
+        self.action_log_probs = self.action_log_probs.to(device)
         self.actions = self.actions.to(device)
-        self.close_to_goal = self.close_to_goal.to(device)
-        self.confidence_scores = self.confidence_scores.to(device)
         self.camera_mask_log_probs = self.camera_mask_log_probs.to(device)
         self.camera_mask_indices = self.camera_mask_indices.to(device)
         self.masks = self.masks.to(device)
@@ -86,38 +69,24 @@ class RolloutStorage:
     def insert(
             self,
             observations,
-            base_recurrent_hidden_states,
-            arm_recurrent_hidden_states, 
+            recurrent_hidden_states,
             actions,
-            close_to_goal, 
-            confidence_scores, 
-            base_action_log_probs,
-            arm_action_log_probs, 
-            base_confidence_score_log_probs, 
-            arm_confidence_score_log_probs, 
+            action_log_probs,
             camera_mask_indices,
             camera_mask_log_probs,
             value_preds,
             rewards,
-            masks
+            masks,
     ):
         for sensor in observations:
             self.observations[sensor][self.step + 1].copy_(
                 observations[sensor]
             )
-        self.base_recurrent_hidden_states[self.step + 1].copy_(
-            base_recurrent_hidden_states
-        )
-        self.arm_recurrent_hidden_states[self.step + 1].copy_(
-            arm_recurrent_hidden_states
+        self.recurrent_hidden_states[self.step + 1].copy_(
+            recurrent_hidden_states
         )
         self.actions[self.step].copy_(actions)
-        self.close_to_goal[self.step].copy_(close_to_goal)
-        self.base_action_log_probs[self.step].copy_(base_action_log_probs)
-        self.arm_action_log_probs[self.step].copy_(arm_action_log_probs)
-        self.base_confidence_score_log_probs[self.step].copy_(base_confidence_score_log_probs)
-        self.arm_confidence_score_log_probs[self.step].copy_(arm_confidence_score_log_probs)
-        self.confidence_scores[self.step].copy_(confidence_scores)
+        self.action_log_probs[self.step].copy_(action_log_probs)
         self.camera_mask_indices[self.step].copy_(camera_mask_indices)
         self.camera_mask_log_probs[self.step].copy_(camera_mask_log_probs)
         self.value_preds[self.step].copy_(value_preds)
@@ -130,9 +99,7 @@ class RolloutStorage:
         for sensor in self.observations:
             self.observations[sensor][0].copy_(self.observations[sensor][-1])
 
-        self.base_recurrent_hidden_states[0].copy_(self.base_recurrent_hidden_states[-1])
-        self.arm_recurrent_hidden_states[0].copy_(self.arm_recurrent_hidden_states[-1])
-
+        self.recurrent_hidden_states[0].copy_(self.recurrent_hidden_states[-1])
         self.masks[0].copy_(self.masks[-1])
 
     def compute_returns(self, next_value, use_gae, gamma, tau):
@@ -167,11 +134,8 @@ class RolloutStorage:
         for start_ind in range(0, num_processes, num_envs_per_batch):
             observations_batch = defaultdict(list)
 
-            base_recurrent_hidden_states_batch = []
-            arm_recurrent_hidden_states_batch = []
+            recurrent_hidden_states_batch = []
             actions_batch = []
-            close_to_goal_batch = []
-            confidence_scores_batch = []
             camera_mask_indices_batch = []
             value_preds_batch = []
             return_batch = []
@@ -187,26 +151,17 @@ class RolloutStorage:
                         self.observations[sensor][:-1, ind]
                     )
 
-                base_recurrent_hidden_states_batch.append(
-                    self.base_recurrent_hidden_states[0:1, ind]
-                )
-
-                arm_recurrent_hidden_states_batch.append(
-                    self.arm_recurrent_hidden_states[0:1, ind]
+                recurrent_hidden_states_batch.append(
+                    self.recurrent_hidden_states[0:1, ind]
                 )
 
                 actions_batch.append(self.actions[:, ind])
-                close_to_goal_batch.append(self.close_to_goal[:, ind])
-                confidence_scores_batch.append(self.confidence_scores[:, ind])
                 camera_mask_indices_batch.append(self.camera_mask_indices[:, ind])
                 value_preds_batch.append(self.value_preds[:-1, ind])
                 return_batch.append(self.returns[:-1, ind])
                 masks_batch.append(self.masks[:-1, ind])
                 old_action_log_probs_batch.append(
-                    self.base_action_log_probs[:, ind] + 
-                    self.arm_action_log_probs[:, ind] + 
-                    self.base_confidence_score_log_probs[:, ind] + 
-                    self.arm_confidence_score_log_probs[:, ind] + 
+                    self.action_log_probs[:, ind] + 
                     self.camera_mask_log_probs[:, ind]
                 )
 
@@ -219,8 +174,6 @@ class RolloutStorage:
                 observations_batch[sensor] = torch.stack(observations_batch[sensor], 1)
 
             actions_batch = torch.stack(actions_batch, 1)
-            close_to_goal_batch = torch.stack(close_to_goal_batch, 1)
-            confidence_scores_batch = torch.stack(confidence_scores_batch, 1)
             camera_mask_indices_batch = torch.stack(camera_mask_indices_batch, 1)
             value_preds_batch = torch.stack(value_preds_batch, 1)
             return_batch = torch.stack(return_batch, 1)
@@ -231,12 +184,8 @@ class RolloutStorage:
             adv_targ = torch.stack(adv_targ, 1)
 
             # States is just a (N, -1) tensor
-            base_recurrent_hidden_states_batch = torch.stack(
-                base_recurrent_hidden_states_batch, 1
-            ).view(N, -1)
-
-            arm_recurrent_hidden_states_batch = torch.stack(
-                arm_recurrent_hidden_states_batch, 1
+            recurrent_hidden_states_batch = torch.stack(
+                recurrent_hidden_states_batch, 1
             ).view(N, -1)
 
             # Flatten the (T, N, ...) tensors to (T * N, ...)
@@ -246,8 +195,6 @@ class RolloutStorage:
                 )
 
             actions_batch = _flatten_helper(T, N, actions_batch)
-            close_to_goal_batch = _flatten_helper(T, N, close_to_goal_batch)
-            confidence_scores_batch = _flatten_helper(T, N, confidence_scores_batch)
             camera_mask_indices_batch = _flatten_helper(T, N, camera_mask_indices_batch)
             value_preds_batch = _flatten_helper(T, N, value_preds_batch)
             return_batch = _flatten_helper(T, N, return_batch)
@@ -259,11 +206,8 @@ class RolloutStorage:
 
             yield (
                 observations_batch,
-                base_recurrent_hidden_states_batch,
-                arm_recurrent_hidden_states_batch,
+                recurrent_hidden_states_batch,
                 actions_batch,
-                close_to_goal_batch, 
-                confidence_scores_batch, 
                 camera_mask_indices_batch, 
                 value_preds_batch,
                 return_batch,
@@ -271,6 +215,7 @@ class RolloutStorage:
                 old_action_log_probs_batch,
                 adv_targ,
             )
+
 
 class AsyncRolloutStorage:
     def __init__(

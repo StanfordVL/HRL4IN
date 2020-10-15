@@ -97,15 +97,14 @@ class CustomFixedNormal(torch.distributions.Normal):
     def squash_correction(self, actions):
         return torch.log((1 - torch.tanh(actions) ** 2 + EPS))
 
-    def log_probs(self, actions, first_index, last_index):
+    def log_probs(self, actions):
         if self.squash:
             actions = atanh(actions)  # [time_steps, action_dim]
             log_probs = super().log_prob(actions)  # [time_steps, action_dim]
             log_probs -= self.squash_correction(actions)  # [time_steps, action_dim]
         else:
             log_probs = super().log_prob(actions)  # [time_steps, action_dim]
-
-        return log_probs[:,first_index:last_index].sum(dim=1, keepdim=True)  # [time_steps, 1]
+        return log_probs.sum(dim=1, keepdim=True)  # [time_steps, 1]
 
     def entropy(self):
         return (super().entropy().  # [time_steps, action_dim]

@@ -53,17 +53,15 @@ def evaluate(envs,
     episode_counts = torch.zeros(envs._num_envs, 1, device=device)
     current_episode_reward = torch.zeros(envs._num_envs, 1, device=device)
 
-    base_recurrent_hidden_states = torch.zeros(envs._num_envs, hidden_size, device=device)
-    arm_recurrent_hidden_states = torch.zeros(envs._num_envs, hidden_size, device=device)
+    recurrent_hidden_states = torch.zeros(envs._num_envs, hidden_size, device=device)
     masks = torch.zeros(envs._num_envs, 1, device=device)
 
     while episode_counts.sum() < num_eval_episodes:
         with torch.no_grad():
-            _, actions, _, _, _, _, _, _, camera_mask_indices, _, base_recurrent_hidden_states, arm_recurrent_hidden_states = actor_critic.act(
+            _, actions, _, camera_mask_indices, _, recurrent_hidden_states = actor_critic.act(
                 batch,
-                base_recurrent_hidden_states,
-                arm_recurrent_hidden_states, 
-                masks, 
+                recurrent_hidden_states,
+                masks,
                 deterministic=True,
                 update=0,
             )
@@ -280,7 +278,6 @@ def main():
         observation_space=train_envs.observation_space,
         action_space=train_envs.action_space,
         use_camera_masks=args.use_camera_masks,
-        split_network = args.split_network, 
         camera_masks_dim=3,
         hidden_size=args.hidden_size,
         cnn_layers_params=cnn_layers_params,
@@ -386,26 +383,16 @@ def main():
                 # actions: [num_processes, 1]
                 # actions_log_probs: [num_processes, 1]
                 # recurrent_hidden_states: [num_processes, hidden_size]
-
-                # TODO:
-                # Include base_actions_log_probs and arm_actions_log_probs
                 (
                     values,
                     actions,
-                    close_to_goal, 
-                    confidence_scores, 
-                    base_actions_log_probs, 
-                    arm_actions_log_probs,
-                    base_confidence_score_log_probs, 
-                    arm_confidence_score_log_probs,
+                    actions_log_probs,
                     camera_mask_indices, 
                     camera_mask_log_probs, 
-                    base_recurrent_hidden_states,
-                    arm_recurrent_hidden_states
+                    recurrent_hidden_states,
                 ) = actor_critic.act(
                     step_observation,
-                    rollouts.base_recurrent_hidden_states[step],
-                    rollouts.arm_recurrent_hidden_states[step],
+                    rollouts.recurrent_hidden_states[step],
                     rollouts.masks[step],
                     update=update,
                 )
@@ -502,25 +489,16 @@ def main():
             # V(s_t) - values: [num_processes. 1]
             # r_t - rewards: [num_processes. 1]
             # mask_t+1 - masks: [[num_processes. 1]
-
-            # TODO
-            # base and arm actions_log_probs
             rollouts.insert(
                 batch,
-                base_recurrent_hidden_states,
-                arm_recurrent_hidden_states, 
+                recurrent_hidden_states,
                 actions,
-                close_to_goal, 
-                confidence_scores, 
-                base_actions_log_probs,
-                arm_actions_log_probs, 
-                base_confidence_score_log_probs, 
-                arm_confidence_score_log_probs, 
+                actions_log_probs,
                 camera_mask_indices,
                 camera_mask_log_probs,
                 values,
                 rewards,
-                masks
+                masks,
             )
 
             count_steps += train_envs._num_envs
@@ -554,9 +532,8 @@ def main():
             }
             next_value = actor_critic.get_value(
                 last_observation,
-                rollouts.base_recurrent_hidden_states[-1],
-                rollouts.arm_recurrent_hidden_states[-1],
-                rollouts.masks[-1]
+                rollouts.recurrent_hidden_states[-1],
+                rollouts.masks[-1],
             ).detach()
 
         # V(s_t+num_steps) - next_value: [num_processes, 1]
