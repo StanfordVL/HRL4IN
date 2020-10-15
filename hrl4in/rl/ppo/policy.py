@@ -125,10 +125,10 @@ class Policy(nn.Module):
                 self.camera_mask_distribution = CategoricalNet(self.base_net.output_size, camera_masks_dim)
 
             # Critic Layer
-            self.goal_hidden_size = 128
+            self.goal_hidden_size = 0
 
             self.critic_linear = nn.Linear(2*self.hidden_size + self.goal_hidden_size, 1)
-            self.goal_linear = nn.Linear(3, self.goal_hidden_size)
+            #self.goal_linear = nn.Linear(3, self.goal_hidden_size)
 
             # Init critic layer 
             nn.init.orthogonal_(self.critic_linear.weight, gain=1)
@@ -283,10 +283,10 @@ class Policy(nn.Module):
             base_actor_features, base_rnn_hidden_states = self.base_net(base_observations, base_rnn_hidden_states, masks)
             arm_actor_features, arm_rnn_hidden_states = self.arm_net(arm_observations, arm_rnn_hidden_states, masks)
 
-            goal_embedding = self.goal_linear(observations['goal'])
+            #goal_embedding = self.goal_linear(observations['goal'])
 
-            #return self.critic_linear(torch.cat((base_actor_features, arm_actor_features), dim=1))
-            return self.critic_linear(torch.cat((torch.cat((base_actor_features, arm_actor_features), dim=1), goal_embedding), dim=1))
+            return self.critic_linear(torch.cat((base_actor_features, arm_actor_features), dim=1))
+            #return self.critic_linear(torch.cat((torch.cat((base_actor_features, arm_actor_features), dim=1), goal_embedding), dim=1))
             
         else:
             value, _, _ = self.net(observations, rnn_hidden_states, masks)
