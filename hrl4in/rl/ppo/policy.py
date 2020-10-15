@@ -202,21 +202,6 @@ class Policy(nn.Module):
                 base_action = base_distribution.sample()
                 arm_action = arm_distribution.sample()
 
-            if self.use_camera_masks:
-                camera_mask_distribution = self.camera_mask_distribution(base_actor_features)
-                if deterministic: 
-                    camera_mask_indices = camera_mask_distribution.mode()
-                else: 
-                    camera_mask_indices = camera_mask_distribution.sample()
-                camera_mask_log_probs = camera_mask_distribution.log_probs(camera_mask_indices)
-            else: 
-                camera_mask_indices = torch.zeros_like(base_action_log_probs, dtype=torch.long)
-                camera_mask_log_probs = torch.zeros_like(base_action_log_probs)
-
-            value = self.get_value(observations, base_rnn_hidden_states, arm_rnn_hidden_states, masks)
-
-            #close_to_goal = observations['close_to_goal']
-
             base_confidence_score = base_action[0,2:]
             arm_confidence_score = arm_action[0,7:]
 
@@ -238,6 +223,21 @@ class Policy(nn.Module):
 
             base_confidence_score_log_probs = base_distribution.log_probs(base_action, 2, 3)
             arm_confidence_score_log_probs = arm_distribution.log_probs(arm_action, 7, 8)
+
+            if self.use_camera_masks:
+                camera_mask_distribution = self.camera_mask_distribution(base_actor_features)
+                if deterministic: 
+                    camera_mask_indices = camera_mask_distribution.mode()
+                else: 
+                    camera_mask_indices = camera_mask_distribution.sample()
+                camera_mask_log_probs = camera_mask_distribution.log_probs(camera_mask_indices)
+            else: 
+                camera_mask_indices = torch.zeros_like(base_action_log_probs, dtype=torch.long)
+                camera_mask_log_probs = torch.zeros_like(base_action_log_probs)
+
+            value = self.get_value(observations, base_rnn_hidden_states, arm_rnn_hidden_states, masks)
+
+            #close_to_goal = observations['close_to_goal']
 
             #action = torch.cat((base_action, arm_action), dim=1)
             #action = arm_action
