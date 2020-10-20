@@ -64,7 +64,7 @@ def evaluate(envs,
                 base_recurrent_hidden_states,
                 arm_recurrent_hidden_states, 
                 masks, 
-                deterministic=True,
+                deterministic=False,
                 update=0,
             )
         actions_np = actions.cpu().numpy()
@@ -76,6 +76,9 @@ def evaluate(envs,
         #sleep(0.01)
 
         observations, rewards, dones, infos = [list(x) for x in zip(*outputs)]
+        #if dones[0]:
+        #    base_recurrent_hidden_states[0, :] = 0.0
+        #    arm_recurrent_hidden_states[0, :] = 0.0
 
         batch = batch_obs(observations)
         for sensor in batch:
@@ -207,8 +210,8 @@ def main():
 
     random.seed(args.seed)
     np.random.seed(args.seed)
-    #device = torch.device("cuda:{}".format(args.pth_gpu_id))
-    device = torch.device("cpu")
+    device = torch.device("cuda:{}".format(args.pth_gpu_id))
+    #device = torch.device("cpu")
     logger.add_filehandler(log_file)
 
     if not args.eval_only:
