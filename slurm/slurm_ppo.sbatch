@@ -3,7 +3,7 @@
 #all commands that start with SBATCH contain commands that are just used by SLURM for scheduling
 #################
 #partition name
-#SBATCH --partition=napoli-gpu
+#SBATCH --partition=tibet
 #################
 #number of GPUs
 #SBATCH --gres=gpu:1

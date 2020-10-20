@@ -213,7 +213,7 @@ def add_common_args(parser):
     group.add_argument(
         "--eval-interval",
         type=int,
-        default=50,
+        default=10,
         help="number of updates after which models are evaluated",
     )
     group.add_argument(
