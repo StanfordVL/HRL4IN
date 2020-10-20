@@ -13,7 +13,7 @@ num_steps="200"
 speed="0.2_0"
 
 log_dir="jr2_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_col_rwd_"$col_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
-log_dir="TEST_SINGLE"
+log_dir="TEST_debug_single_network_no_obstacle"
 echo $log_dir
 
 python -u train_ppo.py \
@@ -38,7 +38,7 @@ python -u train_ppo.py \
    --env-type "gibson" \
    --config-file "master_config.yaml" \
    --arena "stadium" \
-   --num-eval-episodes 1 \
+   --num-eval-episodes 10 \
    --env-mode "headless" \
    --gamma $gamma \
    --random-pos \

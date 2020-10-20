@@ -62,7 +62,7 @@ def evaluate(envs,
                 batch,
                 recurrent_hidden_states,
                 masks,
-                deterministic=True,
+                deterministic=False,
                 update=0,
             )
         actions_np = actions.cpu().numpy()
