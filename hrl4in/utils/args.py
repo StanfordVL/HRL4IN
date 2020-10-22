@@ -287,7 +287,7 @@ def add_ppo_args(parser):
     group.add_argument(
         "--ppo-epoch",
         type=int,
-        default=4,
+        default=8,
         help="number of ppo epochs (default: 4)",
     )
     group.add_argument(
