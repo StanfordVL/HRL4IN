@@ -34,7 +34,7 @@ discount_factor: 0.99
 dist_tol: 0.11
 max_step: 200
 
-output: [base_proprioceptive, arm_proprioceptive, goal, rgb, depth, seg, wrist_rgb, wrist_depth, wrist_seg]
+output: [base_proprioceptive, arm_proprioceptive, goal, rgb, depth, seg, wrist_rgb, wrist_depth, wrist_seg, last_camera_mask_indices]
 resolution: 256
 vertical_fov: 75
 

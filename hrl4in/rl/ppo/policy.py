@@ -12,6 +12,7 @@ import gym
 from hrl4in.utils.distributions import CategoricalNet, DiagGaussianNet, MultiCategoricalNet
 from hrl4in.utils.networks import Net
 from collections import OrderedDict
+from IPython import embed
 
 EPS = 1e-6
 OLD_NETWORK = False
@@ -225,12 +226,16 @@ class Policy(nn.Module):
             arm_confidence_score_log_probs = arm_distribution.log_probs(arm_action, 7, 8)
 
             if self.use_camera_masks:
-                camera_mask_distribution = self.camera_mask_distribution(base_actor_features)
-                if deterministic: 
-                    camera_mask_indices = camera_mask_distribution.mode()
-                else: 
-                    camera_mask_indices = camera_mask_distribution.sample()
-                camera_mask_log_probs = camera_mask_distribution.log_probs(camera_mask_indices)
+                if close_to_goal:
+                    camera_mask_indices = observations['last_camera_mask_indices'].long()
+                    camera_mask_log_probs = torch.zeros_like(base_action_log_probs)
+                else:
+                    camera_mask_distribution = self.camera_mask_distribution(base_actor_features)
+                    if deterministic:
+                        camera_mask_indices = camera_mask_distribution.mode()
+                    else:
+                        camera_mask_indices = camera_mask_distribution.sample()
+                    camera_mask_log_probs = camera_mask_distribution.log_probs(camera_mask_indices)
             else: 
                 camera_mask_indices = torch.zeros_like(base_action_log_probs, dtype=torch.long)
                 camera_mask_log_probs = torch.zeros_like(base_action_log_probs)
@@ -336,8 +341,8 @@ class Policy(nn.Module):
                 camera_mask_dist_entropy = torch.zeros_like(base_distribution_entropy)
 
             #complete_action_log_probs = base_action_log_probs + arm_action_log_probs + camera_mask_log_probs
-            complete_action_log_probs = (1-close_to_goal)*base_action_log_probs + \
-                                        close_to_goal*(arm_action_log_probs_base + arm_action_log_probs_arm) \
+            complete_action_log_probs = (1 - close_to_goal) * (base_action_log_probs + camera_mask_log_probs) + \
+                                        close_to_goal * (arm_action_log_probs_base + arm_action_log_probs_arm) \
                                         + camera_mask_log_probs \
                                         + base_confidence_score_log_probs + arm_confidence_score_log_probs 
             dist_entropy = base_distribution_entropy + arm_distribution_entropy + camera_mask_dist_entropy
