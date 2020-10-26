@@ -12,8 +12,7 @@ lr="1e-4"
 num_steps="200"
 speed="0.2_0"
 
-log_dir="jr2_"$pos"_tol_"$tol"_suc_rwd_"$success_reward"_pot_rwd_"$potential_reward"_col_rwd_"$col_reward"_gma_"$gamma"_lr_"$lr"_nstps_"$num_steps"_spd_"$speed
-log_dir="TEST_reaching_no_obstacles_rgb_included"
+log_dir="RUN_reaching_2_obs_split_net_seed_1"
 echo $log_dir
 
 python -u train_ppo.py \
