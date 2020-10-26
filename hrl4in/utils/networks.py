@@ -107,7 +107,7 @@ class Net(nn.Module):
         self.rnn = nn.GRU(self._rnn_input_size, self._hidden_size)
         
         self.critic_linear = nn.Linear(self._hidden_size + self._goal_hidden_size, 1)
-        self.goal_linear = nn.Linear(3, self._goal_hidden_size)
+        self.goal_linear = nn.Linear(4, self._goal_hidden_size)
 
         self.layer_init()
         self.train()
