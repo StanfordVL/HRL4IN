@@ -129,7 +129,7 @@ class Policy(nn.Module):
             self.goal_hidden_size = 128
 
             self.critic_linear = nn.Linear(2*self.hidden_size + self.goal_hidden_size, 1)
-            self.goal_linear = nn.Linear(3, self.goal_hidden_size)
+            self.goal_linear = nn.Linear(4, self.goal_hidden_size)
 
             # Init critic layer 
             nn.init.orthogonal_(self.critic_linear.weight, gain=1)
