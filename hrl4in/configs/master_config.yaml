@@ -24,7 +24,7 @@ is_discrete: false
 additional_states_dim: 0
 base_proprioceptive_states_dim: 4
 arm_proprioceptive_states_dim: 18
-goal_dim: 3
+goal_dim: 4
 
 reward_type: l2
 success_reward: 30.0
