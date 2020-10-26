@@ -237,7 +237,7 @@ class Policy(nn.Module):
                         camera_mask_indices = camera_mask_distribution.sample()
                     camera_mask_log_probs = camera_mask_distribution.log_probs(camera_mask_indices)
             else: 
-                camera_mask_indices = torch.zeros_like(base_action_log_probs, dtype=torch.long)
+                camera_mask_indices = torch.ones_like(base_action_log_probs, dtype=torch.long)
                 camera_mask_log_probs = torch.zeros_like(base_action_log_probs)
 
             value = self.get_value(observations, base_rnn_hidden_states, arm_rnn_hidden_states, masks)
