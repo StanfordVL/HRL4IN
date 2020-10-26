@@ -37,7 +37,7 @@ max_collisions_allowed: 0
 
 discount_factor: 0.99
 
-output: [base_proprioceptive, arm_proprioceptive, goal, rgb, depth, seg, wrist_rgb, wrist_depth, wrist_seg, last_camera_mask_indices]
+output: [base_proprioceptive, arm_proprioceptive, goal, depth, seg, wrist_depth, wrist_seg, last_camera_mask_indices]
 resolution: 256
 vertical_fov: 75
 
